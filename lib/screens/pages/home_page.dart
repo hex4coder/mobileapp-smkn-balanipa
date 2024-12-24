@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/configs/colors.dart';
 import 'package:myapp/screens/widgets/category_widget.dart';
 import 'package:myapp/screens/widgets/header_row_widget.dart';
+import 'package:myapp/screens/widgets/product_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -126,82 +127,75 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
+      child: Container(
+        color: Colors.grey.shade100,
+        padding: const EdgeInsets.all(10.0),
+        height: MediaQuery.of(context).size.height * .7,
+        child: SingleChildScrollView(
           child: Column(
             children: [
               _headerWidget(),
               const SizedBox(
                 height: 30,
               ),
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      HeaderRowWidget(
-                        onTap: () {},
-                        title: "Produk Populer",
-                      ),
-                      SizedBox(
-                        height: 200,
-                        child: ListView.builder(
-                          itemBuilder: (context, index) {
-                            return Row(
-                              children: [
-                                Container(
-                                  color: index % 2 == 0
-                                      ? kPrimaryColor
-                                      : kSecondaryColor,
-                                  width: 300,
-                                  child: Center(
-                                    child: Text(index.toString()),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                              ],
-                            );
-                          },
-                          shrinkWrap: true,
-                          itemCount: 10,
-                          scrollDirection: Axis.horizontal,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    HeaderRowWidget(
+                      onTap: () {},
+                      title: "Produk Populer",
+                    ),
+                    SizedBox(
+                      height: 200,
+                      child: ListView.separated(
+                        separatorBuilder: (context, index) => const SizedBox(
+                          width: 20,
                         ),
+                        itemBuilder: (context, index) {
+                          return const ProductWidget();
+                        },
+                        shrinkWrap: true,
+                        itemCount: 2,
+                        scrollDirection: Axis.horizontal,
                       ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      HeaderRowWidget(
-                        onTap: () {},
-                        title: "Kategori",
-                      ),
-                      SizedBox(
-                        height: 70,
-                        child: ListView.separated(
-                          separatorBuilder: (context, index) => const SizedBox(
-                            width: 10,
-                          ),
-                          itemBuilder: (context, index) {
-                            return CategoryWidget(
-                              categoryPhoto: "assets/img/logo.png",
-                              categoryName: "Kategori $index",
-                              onTap: () {},
-                            );
-                          },
-                          shrinkWrap: true,
-                          itemCount: 5,
-                          scrollDirection: Axis.horizontal,
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    HeaderRowWidget(
+                      onTap: () {},
+                      title: "Kategori",
+                    ),
+                    SizedBox(
+                      height: 100,
+                      child: ListView.separated(
+                        separatorBuilder: (context, index) => const SizedBox(
+                          width: 10,
                         ),
+                        itemBuilder: (context, index) {
+                          return CategoryWidget(
+                            categoryPhoto: "assets/img/logo.png",
+                            categoryName: "Kategori $index",
+                            onTap: () {},
+                          );
+                        },
+                        shrinkWrap: true,
+                        itemCount: 5,
+                        scrollDirection: Axis.horizontal,
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                  ],
                 ),
               )
             ],
           ),
         ),
-      );
+      ),
+    );
   }
 }

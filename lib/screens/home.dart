@@ -30,12 +30,15 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         children: [
-          HomePage(),
+          const HomePage(),
           Container(
             color: kPrimaryColor,
           ),
           Container(
             color: kSecondaryColor,
+          ),
+          Container(
+            color: Colors.blue,
           ),
         ],
       ),
@@ -51,13 +54,18 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.note_alt), label: "Produk"),
+          BottomNavigationBarItem(icon: Icon(Icons.notes), label: "Produk"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart), label: "Cart"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Akun"),
         ],
+        showSelectedLabels: true,
+        showUnselectedLabels: false,
+        backgroundColor: Colors.blue,
         selectedIconTheme: IconThemeData(color: kPrimaryColor),
-        unselectedIconTheme: const IconThemeData(color: Colors.grey),
+        unselectedIconTheme: IconThemeData(color: Colors.black.withOpacity(.2)),
         selectedItemColor: kPrimaryColor,
-        unselectedItemColor: Colors.grey,
+        unselectedItemColor: Colors.black.withOpacity(.2),
       ),
     );
   }

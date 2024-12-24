@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class CategoryWidget extends StatelessWidget {
   const CategoryWidget(
       {super.key,
@@ -16,20 +15,31 @@ class CategoryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox.fromSize(
-          size: const Size.square(150),
-          child: Card(
-            color: Colors.white,
-            shadowColor: Colors.black.withOpacity(.1),
-            child: Image.asset(
-              categoryPhoto,
-              width: 50,
-              height: 50,
+        Expanded(
+          child: Container(
+            width: 80,
+            child: Card(
+              elevation: 10,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
+              shadowColor: Colors.black.withOpacity(.1),
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/img/logo.png"),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
         const SizedBox(
-          height: 5,
+          height: 2,
         ),
         Text(
           categoryName,
