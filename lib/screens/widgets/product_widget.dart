@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/configs/colors.dart';
+import 'package:myapp/configs/server.dart';
 
 class ProductWidget extends StatelessWidget {
   const ProductWidget({super.key});
@@ -52,7 +53,7 @@ class ProductWidget extends StatelessWidget {
                 ],
               ),
               Text(
-                "Rp. 56K",
+                ServerConfig.convertPrice(34000),
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

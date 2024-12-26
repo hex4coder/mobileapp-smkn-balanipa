@@ -12,8 +12,8 @@ class AuthController extends GetxController {
   }
 
   // functions
-  void login() {}
-  void register() {}
+  Future<void> login() async {}
+  Future<void> register() async {}
 
   // getter and setter
   bool get isLoggedIn => _user.value?.id != null;

@@ -16,7 +16,7 @@ class CategoryWidget extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: Container(
+          child: SizedBox(
             width: 80,
             child: Card(
               elevation: 10,

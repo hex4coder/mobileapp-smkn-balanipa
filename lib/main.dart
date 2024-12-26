@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/helpers/api_token.dart';
 import 'package:myapp/screens/splash.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await ApiTokenHelper.initialize();
   runApp(const MyApp());
 }
 
