@@ -54,7 +54,7 @@ class ProductWidget extends StatelessWidget {
               ),
               Text(
                 ServerConfig.convertPrice(34000),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: kPrimaryColor,

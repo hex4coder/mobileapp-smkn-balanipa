@@ -20,6 +20,11 @@ class ApiTokenHelper {
     _box = GetStorage();
   }
 
+  // ambil token dalam bentuk bearer
+  String getBearer() {
+    return "Bearer ${get()}";
+  }
+
   // simpan token ke storage
   Future<void> save(String newToken) async {
     await reset();

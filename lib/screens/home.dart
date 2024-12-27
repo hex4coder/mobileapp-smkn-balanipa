@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
         showSelectedLabels: true,
         showUnselectedLabels: false,
         backgroundColor: Colors.blue,
-        selectedIconTheme: IconThemeData(color: kPrimaryColor),
+        selectedIconTheme: const IconThemeData(color: kPrimaryColor),
         unselectedIconTheme: IconThemeData(color: Colors.black.withOpacity(.2)),
         selectedItemColor: kPrimaryColor,
         unselectedItemColor: Colors.black.withOpacity(.2),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/configs/colors.dart';
+import 'package:myapp/helpers/api_token.dart';
 import 'package:myapp/screens/widgets/category_widget.dart';
 import 'package:myapp/screens/widgets/header_row_widget.dart';
 import 'package:myapp/screens/widgets/product_widget.dart';
+import 'package:get/get.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +16,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late TextEditingController _searchProductController;
   bool _isVoiceSearchClicked = false;
+
+  final ApiTokenHelper _t = Get.find<ApiTokenHelper>();
 
   Container _headerWidget() {
     return Container(
@@ -79,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                 Icons.search,
                 color: Colors.black.withOpacity(.2),
               ),
-              suffixIcon: Icon(
+              suffixIcon: const Icon(
                 Icons.mic,
                 color: kPrimaryColor,
               ),
@@ -165,7 +169,10 @@ class _HomePageState extends State<HomePage> {
                       height: 30,
                     ),
                     HeaderRowWidget(
-                      onTap: () {},
+                      onTap: () {
+                        Get.snackbar("Test API Token helper",
+                            _t.hasToken() ? "Ada token" : "Belum ada token");
+                      },
                       title: "Kategori",
                     ),
                     SizedBox(

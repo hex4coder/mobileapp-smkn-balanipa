@@ -2,7 +2,7 @@
 
 class ServerConfig {
   // base url
-  final kServerBaseAPI = "https://ecom-api.smknbalanipa.sch.id";
+  static String kServerBaseAPI = "https://ecom-api.smknbalanipa.sch.id";
   // static String kServerBaseAPI = "http://89.116.20.48:3000";
 
   // price conversion

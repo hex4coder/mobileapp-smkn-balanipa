@@ -31,7 +31,7 @@ class HeaderRowWidget extends StatelessWidget {
           onPressed: onTap,
           child: Text(
             labelTap,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
               color: kPrimaryColor,

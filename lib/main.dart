@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/bindings/root.dart';
+import 'package:myapp/controllers/product.dart';
 import 'package:myapp/helpers/api_token.dart';
+import 'package:myapp/screens/home.dart';
 import 'package:myapp/screens/splash.dart';
 
 void main() async {
@@ -23,7 +27,23 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         textTheme: GoogleFonts.poppinsTextTheme(),
       ),
-      home: const SplashScreen(),
+
+      // konfigurasi bindings dan screen
+      initialRoute: '/',
+      initialBinding: RootBinding(),
+      getPages: [
+        GetPage(
+          name: '/',
+          page: () => const SplashScreen(),
+        ),
+        GetPage(
+          name: '/home',
+          page: () => const HomeScreen(),
+          binding: BindingsBuilder(() {
+            Get.put(ProductController());
+          }),
+        ),
+      ],
     );
   }
 }

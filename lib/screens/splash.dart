@@ -15,7 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     Timer(const Duration(seconds: 1), () {
-      Get.offAll(const HomeScreen());
+      Get.offAllNamed('/home');
     });
     super.initState();
   }
@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
             const SizedBox(
               height: 20,
             ),
-            Text(
+            const Text(
               "UPTD SMKN Balanipa",
               style: TextStyle(
                 fontWeight: FontWeight.bold,

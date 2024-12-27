@@ -1,28 +1,27 @@
-// import 'package:get/get.dart';
-// import 'package:myapp/models/product.dart';
+import 'package:get/get.dart';
 
-// class ProductController extends GetxController {
-//   // vars
-//   final _listProduct = <Product>[].obs;
+class ProductController extends GetxController {
+  // // vars
+  // final _listProduct = <Product>[].obs;
 
-//   // function
-//   Future<List<Product>> fetchAll() async {
-//     return [];
-//   }
+  // // function
+  // Future<List<Product>> fetchAll() async {
+  //   return [];
+  // }
 
-//   Future<List<Product>> fetchByID(int id) async {
-//     return [];
-//   }
+  // Future<List<Product>> fetchByID(int id) async {
+  //   return [];
+  // }
 
-//   Future<List<Product>> fetchByCategoryID(int categoriID) async {
-//     return [];
-//   }
+  // Future<List<Product>> fetchByCategoryID(int categoriID) async {
+  //   return [];
+  // }
 
-//   Future<List<Product>> fetchByBrandID(int brandID) async {
-//     return [];
-//   }
+  // Future<List<Product>> fetchByBrandID(int brandID) async {
+  //   return [];
+  // }
 
-//   // setters and getters
-//   List<Product> get listProduct => _listProduct;
-//   set listProduct(List<Product> newData) => _listProduct.assignAll(newData);
-// }
+  // // setters and getters
+  // List<Product> get listProduct => _listProduct;
+  // set listProduct(List<Product> newData) => _listProduct.assignAll(newData);
+}
