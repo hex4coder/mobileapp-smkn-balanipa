@@ -14,16 +14,53 @@ class ProductWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: Container(
-            width: 300,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image:
-                    NetworkImage(ServerConfig.getImageUrl(product.thumbnail)),
-                fit: BoxFit.cover,
-              ),
-              // color: kPrimaryColor,
-              borderRadius: BorderRadius.circular(30),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(
+              ServerConfig.getImageUrl(product.thumbnail),
+              fit: BoxFit.cover,
+              width: 300,
+              height: 200,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+
+                return SizedBox(
+                  width: 300,
+                  height: 200,
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                      const SizedBox(
+                        height: 2,
+                      ),
+                      const Text(
+                        "loading",
+                        style: TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w300,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Center(
+                  child: Text(
+                    error.toString(),
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 12,
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -51,9 +88,13 @@ class ProductWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "By : ${product.brandId}",
+                    ServerConfig.capitalize(
+                            product.deskripsi.substring(0, 30)) +
+                        "...",
+                    overflow: TextOverflow.clip,
+                    maxLines: 1,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 10,
                       color: Colors.black.withOpacity(.5),
                     ),
                   ),

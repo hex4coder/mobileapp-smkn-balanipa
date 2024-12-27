@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:myapp/helpers/ui_snackbar.dart';
 
 enum ResponseType { success, error }
 
@@ -16,6 +17,9 @@ class ApiResponse {
 
   // buat response yang menandakan error
   static ApiResponse error(String message) {
+    // tampilkan pesan kesalahan
+    UiSnackbar.error('error', message);
+
     return ApiResponse(
         message: message, status: ResponseType.error, data: null);
   }

@@ -13,7 +13,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Timer(const Duration(seconds: 1), () {
+    Timer(const Duration(seconds: 2), () {
       Get.offAllNamed('/home');
     });
     super.initState();
@@ -55,6 +55,13 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(
                 fontSize: 10,
               ),
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            SizedBox.fromSize(
+              size: const Size(30, 30),
+              child: const CircularProgressIndicator(),
             ),
           ],
         ),

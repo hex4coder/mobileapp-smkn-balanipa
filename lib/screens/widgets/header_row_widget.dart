@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/configs/colors.dart';
 
-
 class HeaderRowWidget extends StatelessWidget {
   const HeaderRowWidget({
     required this.onTap,
@@ -22,9 +21,9 @@ class HeaderRowWidget extends StatelessWidget {
         Text(
           title,
           style: const TextStyle(
-            fontSize: 18,
+            fontSize: 14,
             color: Colors.black87,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
           ),
         ),
         TextButton(
@@ -32,8 +31,8 @@ class HeaderRowWidget extends StatelessWidget {
           child: Text(
             labelTap,
             style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
               color: kPrimaryColor,
             ),
           ),

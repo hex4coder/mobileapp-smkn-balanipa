@@ -22,8 +22,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // drawer?
+
       body: PageView(
         controller: _pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        pageSnapping: false,
         onPageChanged: (int pageIndex) {
           setState(() {
             _currentPageIndex = pageIndex;

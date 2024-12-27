@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/configs/colors.dart';
+import 'package:myapp/controllers/category.dart';
 import 'package:myapp/controllers/product.dart';
 import 'package:myapp/helpers/api_token.dart';
 import 'package:myapp/screens/widgets/category_widget.dart';
+import 'package:myapp/screens/widgets/empty_widget.dart';
 import 'package:myapp/screens/widgets/header_row_widget.dart';
 import 'package:myapp/screens/widgets/product_widget.dart';
 import 'package:get/get.dart';
@@ -18,8 +20,7 @@ class _HomePageState extends State<HomePage> {
   late TextEditingController _searchProductController;
   bool _isVoiceSearchClicked = false;
 
-  final ApiTokenHelper _t = Get.find<ApiTokenHelper>();
-
+  // untuk membuat header widget
   Container _headerWidget() {
     return Container(
       width: double.infinity,
@@ -56,6 +57,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // untuk membuat kotak pencarian
   Stack _searchFieldWidget() {
     return Stack(
       children: [
@@ -123,6 +125,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // inisialisasi data disini
   @override
   void initState() {
     _searchProductController = TextEditingController();
@@ -149,7 +152,9 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     HeaderRowWidget(
-                      onTap: () {},
+                      onTap: () {
+                        Get.find<ProductController>().fetchPopularProducts(4);
+                      },
                       title: "Produk Populer",
                     ),
                     SizedBox(
@@ -162,7 +167,10 @@ class _HomePageState extends State<HomePage> {
 
                         if (controller.listProduct.isEmpty) {
                           return const Center(
-                            child: Text("No Product"),
+                            child: EmptyWidget(
+                                title: 'No Data',
+                                description:
+                                    'Tidak ada data produk populer yang ditemukan'),
                           );
                         }
 
@@ -184,29 +192,42 @@ class _HomePageState extends State<HomePage> {
                       height: 30,
                     ),
                     HeaderRowWidget(
-                      onTap: () {
-                        Get.snackbar("Test API Token helper",
-                            _t.hasToken() ? "Ada token" : "Belum ada token");
-                      },
+                      onTap: () {},
                       title: "Kategori",
                     ),
                     SizedBox(
                       height: 100,
-                      child: ListView.separated(
-                        separatorBuilder: (context, index) => const SizedBox(
-                          width: 10,
-                        ),
-                        itemBuilder: (context, index) {
-                          return CategoryWidget(
-                            categoryPhoto: "assets/img/logo.png",
-                            categoryName: "Kategori $index",
-                            onTap: () {},
+                      child: GetX<CategoryController>(builder: (controller) {
+                        if (controller.isloading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
                           );
-                        },
-                        shrinkWrap: true,
-                        itemCount: 5,
-                        scrollDirection: Axis.horizontal,
-                      ),
+                        }
+
+                        if (controller.list.isEmpty) {
+                          return const Center(
+                            child: EmptyWidget(
+                                title: 'No Data',
+                                description:
+                                    'Tidak ada data kategori yang ditemukan'),
+                          );
+                        }
+
+                        return ListView.separated(
+                          separatorBuilder: (context, index) => const SizedBox(
+                            width: 30,
+                          ),
+                          itemBuilder: (context, index) {
+                            return CategoryWidget(
+                              category: controller.list[index],
+                              onTap: () {},
+                            );
+                          },
+                          shrinkWrap: true,
+                          itemCount: controller.list.length,
+                          scrollDirection: Axis.horizontal,
+                        );
+                      }),
                     ),
                     const SizedBox(
                       height: 30,

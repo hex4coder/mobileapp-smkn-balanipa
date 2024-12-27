@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/bindings/product.dart';
 import 'package:myapp/bindings/root.dart';
 import 'package:myapp/controllers/product.dart';
 import 'package:myapp/helpers/api_token.dart';
@@ -39,9 +39,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/home',
           page: () => const HomeScreen(),
-          binding: BindingsBuilder(() {
-            Get.put(ProductController());
-          }),
+          binding: ProductBinding(),
         ),
       ],
     );
