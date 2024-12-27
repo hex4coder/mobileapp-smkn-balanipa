@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/configs/colors.dart';
 import 'package:myapp/configs/server.dart';
+import 'package:myapp/models/product.dart';
 
 class ProductWidget extends StatelessWidget {
-  const ProductWidget({super.key});
+  const ProductWidget({required this.product, super.key});
+
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +17,12 @@ class ProductWidget extends StatelessWidget {
           child: Container(
             width: 300,
             decoration: BoxDecoration(
-              // image: DecorationImage(image: )
-              color: kPrimaryColor,
+              image: DecorationImage(
+                image:
+                    NetworkImage(ServerConfig.getImageUrl(product.thumbnail)),
+                fit: BoxFit.cover,
+              ),
+              // color: kPrimaryColor,
               borderRadius: BorderRadius.circular(30),
             ),
           ),
@@ -34,7 +41,7 @@ class ProductWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Product Name",
+                    product.nama,
                     maxLines: 1,
                     overflow: TextOverflow.clip,
                     style: TextStyle(
@@ -44,7 +51,7 @@ class ProductWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "By : Marendeng",
+                    "By : ${product.brandId}",
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.black.withOpacity(.5),
@@ -53,7 +60,7 @@ class ProductWidget extends StatelessWidget {
                 ],
               ),
               Text(
-                ServerConfig.convertPrice(34000),
+                ServerConfig.convertPrice(product.harga),
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

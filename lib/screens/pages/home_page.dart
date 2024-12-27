@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/configs/colors.dart';
+import 'package:myapp/controllers/product.dart';
 import 'package:myapp/helpers/api_token.dart';
 import 'package:myapp/screens/widgets/category_widget.dart';
 import 'package:myapp/screens/widgets/header_row_widget.dart';
@@ -153,17 +154,31 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(
                       height: 200,
-                      child: ListView.separated(
-                        separatorBuilder: (context, index) => const SizedBox(
-                          width: 20,
-                        ),
-                        itemBuilder: (context, index) {
-                          return const ProductWidget();
-                        },
-                        shrinkWrap: true,
-                        itemCount: 2,
-                        scrollDirection: Axis.horizontal,
-                      ),
+                      child: GetX<ProductController>(builder: (controller) {
+                        if (controller.isLoading) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        if (controller.listProduct.isEmpty) {
+                          return const Center(
+                            child: Text("No Product"),
+                          );
+                        }
+
+                        return ListView.separated(
+                          separatorBuilder: (context, index) => const SizedBox(
+                            width: 20,
+                          ),
+                          itemBuilder: (context, index) {
+                            return ProductWidget(
+                                product: controller.listProduct[index]);
+                          },
+                          shrinkWrap: true,
+                          itemCount: controller.listProduct.length,
+                          scrollDirection: Axis.horizontal,
+                        );
+                      }),
                     ),
                     const SizedBox(
                       height: 30,
