@@ -1,8 +1,30 @@
 import 'package:get/get.dart';
 import 'package:myapp/helpers/api_http.dart';
 import 'package:myapp/helpers/models/api_response_model.dart';
+import 'package:myapp/models/brand.dart';
+import 'package:myapp/models/category.dart';
+import 'package:myapp/models/photo_product.dart';
 import 'package:myapp/models/product.dart';
+import 'package:myapp/models/ukuran_product.dart';
 
+// berisi response untuk detail produk
+class DetailProductResponse {
+  Product product;
+  Category kategori;
+  Brand brand;
+  List<PhotoProduct> listPhoto;
+  List<UkuranProduct> listUkuran;
+
+  DetailProductResponse({
+    required this.product,
+    required this.kategori,
+    required this.brand,
+    required this.listPhoto,
+    required this.listUkuran,
+  });
+}
+
+// berisi controller tentang product
 class ProductController extends GetxController {
   // vars
 
@@ -17,7 +39,6 @@ class ProductController extends GetxController {
 
   @override
   void onInit() {
-
     // init api helper
     _api = Get.find<ApiHttp>();
 
@@ -44,15 +65,29 @@ class ProductController extends GetxController {
     _loading.value = false;
   }
 
-  Future<Product?> fetchByID(int id) async {
-    _loading.value = true;
+  Future<DetailProductResponse?> fetchDetailProduct(int id) async {
+    // _loading.value = true;
     final res = await _api.get('/products');
-    _loading.value = false;
+    // _loading.value = false;
     if (res.status == ResponseType.error) {
       return null;
     }
-    final product = Product.fromJson(res.data);
-    return product;
+
+    final brand = Brand.fromJson(res.data['brand']);
+    final cat = Category.fromJson(res.data['kategori']);
+    final product = Product.fromJson(res.data['product']);
+    final listUkuran = UkuranProduct.getListUkuran(res.data['ukuran']);
+    final listPhoto = PhotoProduct.getListPhotos(res.data['photos'],
+        thumbnail: product.thumbnail);
+
+    final detRes = DetailProductResponse(
+        product: product,
+        kategori: cat,
+        brand: brand,
+        listPhoto: listPhoto,
+        listUkuran: listUkuran);
+
+    return detRes;
   }
 
   Future<void> fetchByCategoryID(int categoriID) async {

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/bindings/product.dart';
 import 'package:myapp/bindings/root.dart';
-import 'package:myapp/controllers/product.dart';
 import 'package:myapp/helpers/api_token.dart';
 import 'package:myapp/screens/home.dart';
 import 'package:myapp/screens/splash.dart';

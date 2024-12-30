@@ -24,7 +24,7 @@ class ProductWidget extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Hero(
-                tag: 'product-image',
+                tag: 'product-thumbnail',
                 child: UiNetImage(pathImage: product.thumbnail),
               ),
             ),
@@ -53,9 +53,7 @@ class ProductWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      ServerConfig.capitalize(
-                              product.deskripsi.substring(0, 30)) +
-                          "...",
+                      "${ServerConfig.capitalize(product.deskripsi.substring(0, 30))}...",
                       overflow: TextOverflow.clip,
                       maxLines: 1,
                       style: TextStyle(

@@ -27,7 +27,11 @@ class ServerConfig {
   }
 
   // get image url
-  static String getImageUrl(String filename) {
+  static String getImageUrl(String filename, {bool externalUrl = false}) {
+    if (externalUrl) {
+      return filename;
+    }
+
     String baseUriImage = "${ServerConfig.kEcommerceServerBaseURL}/storage/";
     return baseUriImage + filename;
   }

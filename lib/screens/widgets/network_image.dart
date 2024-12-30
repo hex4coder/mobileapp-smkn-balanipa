@@ -3,15 +3,19 @@ import 'package:myapp/configs/server.dart';
 
 class UiNetImage extends StatelessWidget {
   const UiNetImage(
-      {required this.pathImage, this.fit = BoxFit.cover, super.key});
+      {required this.pathImage,
+      this.fit = BoxFit.cover,
+      this.isFullURL = false,
+      super.key});
 
   final String pathImage;
   final BoxFit fit;
+  final bool isFullURL;
 
   @override
   Widget build(BuildContext context) {
     return Image.network(
-      ServerConfig.getImageUrl(pathImage),
+      isFullURL ? pathImage : ServerConfig.getImageUrl(pathImage),
       fit: fit,
       width: 300,
       height: 200,

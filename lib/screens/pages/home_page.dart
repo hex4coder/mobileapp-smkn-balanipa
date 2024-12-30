@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:myapp/configs/colors.dart';
 import 'package:myapp/controllers/category.dart';
 import 'package:myapp/controllers/product.dart';
-import 'package:myapp/helpers/api_token.dart';
 import 'package:myapp/screens/widgets/category_widget.dart';
 import 'package:myapp/screens/widgets/empty_widget.dart';
 import 'package:myapp/screens/widgets/header_row_widget.dart';
