@@ -67,18 +67,23 @@ class ProductController extends GetxController {
 
   Future<DetailProductResponse?> fetchDetailProduct(int id) async {
     // _loading.value = true;
-    final res = await _api.get('/products');
+    final res = await _api.get('/product/$id');
     // _loading.value = false;
     if (res.status == ResponseType.error) {
       return null;
     }
 
     final brand = Brand.fromJson(res.data['brand']);
+    // print(brand.toJson());
     final cat = Category.fromJson(res.data['kategori']);
+    // print(cat.toJson());
     final product = Product.fromJson(res.data['product']);
+    // print(product.toJson());
     final listUkuran = UkuranProduct.getListUkuran(res.data['ukuran']);
+    // print(listUkuran);
     final listPhoto = PhotoProduct.getListPhotos(res.data['photos'],
         thumbnail: product.thumbnail);
+    // print(listPhoto);
 
     final detRes = DetailProductResponse(
         product: product,

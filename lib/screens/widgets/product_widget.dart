@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myapp/configs/colors.dart';
 import 'package:myapp/configs/server.dart';
+import 'package:myapp/controllers/product.dart';
+import 'package:myapp/helpers/ui_snackbar.dart';
 import 'package:myapp/models/product.dart';
 import 'package:myapp/screens/product/detail.dart';
 import 'package:myapp/screens/widgets/network_image.dart';
@@ -14,8 +16,18 @@ class ProductWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Get.to(() => DetailProduct(product: product));
+      onTap: () async {
+        final controller = Get.find<ProductController>();
+        final response = await controller.fetchDetailProduct(product.id);
+
+        if (response == null) {
+          UiSnackbar.error('Failed', 'Failed fetch detail product');
+          return;
+        }
+
+        Get.to(() => DetailProduct(
+              detailProduct: response,
+            ));
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

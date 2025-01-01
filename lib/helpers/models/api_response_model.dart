@@ -10,7 +10,7 @@ class ApiResponse {
 
   ApiResponse({required this.message, required this.status, this.data});
 
-  static ApiResponse success(String message, [dynamic data]) {
+  static ApiResponse success(String message, dynamic data) {
     return ApiResponse(
         message: message, status: ResponseType.success, data: data);
   }
