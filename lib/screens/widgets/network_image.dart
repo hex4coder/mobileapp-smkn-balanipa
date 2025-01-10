@@ -6,25 +6,29 @@ class UiNetImage extends StatelessWidget {
       {required this.pathImage,
       this.fit = BoxFit.cover,
       this.isFullURL = false,
+      this.autoSize = false,
+      this.size = const Size(300, 200),
       super.key});
 
   final String pathImage;
   final BoxFit fit;
   final bool isFullURL;
+  final bool autoSize;
+  final Size size;
 
   @override
   Widget build(BuildContext context) {
     return Image.network(
       isFullURL ? pathImage : ServerConfig.getImageUrl(pathImage),
       fit: fit,
-      width: 300,
-      height: 200,
+      width: autoSize ? double.infinity : size.width,
+      height: autoSize ? double.infinity :  size.height,
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null) return child;
 
         return SizedBox(
-          width: 300,
-          height: 200,
+          width: autoSize ? double.infinity : size.width,
+          height: autoSize ? double.infinity :  size.height,
           child: Column(
             children: [
               CircularProgressIndicator(

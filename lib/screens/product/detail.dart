@@ -54,7 +54,7 @@ class _DetailProductState extends State<DetailProduct> {
                             return Hero(
                               tag:
                                   widget.detailProduct.listPhoto[index].id == -1
-                                      ? 'product-thumbnail'
+                                      ? 'product-thumbnail-${widget.detailProduct.product.id}'
                                       : 'product-image-$index',
                               child: UiNetImage(
                                 pathImage:
@@ -116,6 +116,7 @@ class _DetailProductState extends State<DetailProduct> {
                   children: [
                     SizedBox(
                       width: (MediaQuery.of(context).size.width / 2) - 20,
+                      height: (MediaQuery.of(context).size.width / 2) - 20,
                       child: Card(
                         elevation: 0,
                         color: kPrimaryColor.withValues(alpha: .1),
@@ -127,8 +128,9 @@ class _DetailProductState extends State<DetailProduct> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(40),
                                 child: UiNetImage(
-                                    pathImage: ServerConfig.getImageUrl(
-                                        widget.detailProduct.brand.logo)),
+                                  size: const Size(100, 100),
+                                    pathImage: 
+                                        widget.detailProduct.brand.logo),
                               ),
                               const SizedBox(
                                 height: 10,
@@ -152,7 +154,16 @@ class _DetailProductState extends State<DetailProduct> {
                       width: 10,
                     ),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(ServerConfig.convertPrice(widget.detailProduct.product.harga), style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+
+                        ),),
+
+
+                        const SizedBox(height: 10,),
                         RowInfoIcon(
                           icon: widget.detailProduct.product.isPopular
                               ? Icons.check
@@ -163,29 +174,33 @@ class _DetailProductState extends State<DetailProduct> {
                           iconColor: widget.detailProduct.product.isPopular
                               ? Colors.green
                               : kSecondaryColor,
-                        ),
+                        ), 
+ 
                       ],
                     ),
                   ],
                 ),
-
+const SizedBox(height: 20,),
                 // button
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kPrimaryColor,
-                    iconColor: Colors.white,
+                Center(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kPrimaryColor,
+                      iconColor: Colors.white,
+                    ),
+                    onPressed: () async {
+                      // TODO: Masukkan data kedalam shopping cart
+                    },
+                    label: const Text("Masukkan Keranjang",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        )),
+                    icon: const Icon(Icons.add_shopping_cart),
                   ),
-                  onPressed: () {
-                    // TODO: Masukkan data kedalam shopping cart
-                  },
-                  label: const Text("Masukkan Keranjang",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      )),
-                  icon: const Icon(Icons.add_shopping_cart),
                 ),
+const SizedBox(height: 20,),  
               ],
             ),
           ),

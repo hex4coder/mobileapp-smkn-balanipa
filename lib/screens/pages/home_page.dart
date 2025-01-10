@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myapp/configs/colors.dart';
 import 'package:myapp/controllers/category.dart';
 import 'package:myapp/controllers/product.dart';
+import 'package:myapp/helpers/cart.dart';
+import 'package:myapp/helpers/ui_snackbar.dart';
 import 'package:myapp/screens/widgets/category_widget.dart';
 import 'package:myapp/screens/widgets/empty_widget.dart';
 import 'package:myapp/screens/widgets/header_row_widget.dart';
@@ -158,34 +161,68 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(
                       height: 200,
-                      child: GetX<ProductController>(builder: (controller) {
-                        if (controller.isLoading) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
+                      child: GetX<ProductController>(
+                          autoRemove: false,
+                          builder: (controller) {
+                            if (controller.isLoading) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
 
-                        if (controller.listProduct.isEmpty) {
-                          return const Center(
-                            child: EmptyWidget(
-                                title: 'No Data',
-                                description:
-                                    'Tidak ada data produk populer yang ditemukan'),
-                          );
-                        }
+                            if (controller.listProduct.isEmpty) {
+                              return const Center(
+                                child: EmptyWidget(
+                                    title: 'No Data',
+                                    description:
+                                        'Tidak ada data produk populer yang ditemukan'),
+                              );
+                            }
 
-                        return ListView.separated(
-                          separatorBuilder: (context, index) => const SizedBox(
-                            width: 20,
-                          ),
-                          itemBuilder: (context, index) {
-                            return ProductWidget(
-                                product: controller.listProduct[index]);
-                          },
-                          shrinkWrap: true,
-                          itemCount: controller.listProduct.length,
-                          scrollDirection: Axis.horizontal,
-                        );
-                      }),
+                            return ListView.separated(
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(
+                                width: 20,
+                              ),
+                              itemBuilder: (context, index) {
+                                return Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    ProductWidget(
+                                        product: controller.listProduct[index]),
+                                    Positioned(
+                                        bottom: 60,
+                                        right: 10,
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            final cartHelper =
+                                                Get.find<CartHelper>();
+                                            await cartHelper
+                                                .addNewItemFromProduct(
+                                                    controller
+                                                        .listProduct[index]);
+                                           Fluttertoast.showToast(msg: 'Dimasukkan ke keranjang.');
+                                          },
+                                          child: Container(
+                                              padding: const EdgeInsets.all(8),
+                                              decoration: BoxDecoration(
+                                                  color: kPrimaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          30)),
+                                              child: const Icon(
+                                                Icons.add_shopping_cart,
+                                                color: Colors.white,
+                                                size: 20,
+                                              )),
+                                        )),
+                                  ],
+                                );
+                              },
+                              shrinkWrap: true,
+                              itemCount: controller.listProduct.length,
+                              scrollDirection: Axis.horizontal,
+                            );
+                          }),
                     ),
                     const SizedBox(
                       height: 30,

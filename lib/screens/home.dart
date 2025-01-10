@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/configs/colors.dart';
+import 'package:myapp/screens/pages/cart_page.dart';
 import 'package:myapp/screens/pages/home_page.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -38,9 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             color: kPrimaryColor,
           ),
-          Container(
-            color: kSecondaryColor,
-          ),
+          const CartPage(),
           Container(
             color: Colors.blue,
           ),

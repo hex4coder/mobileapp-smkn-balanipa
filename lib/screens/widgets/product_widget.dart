@@ -36,7 +36,7 @@ class ProductWidget extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Hero(
-                tag: 'product-thumbnail',
+                tag: 'product-thumbnail-${product.id}',
                 child: UiNetImage(pathImage: product.thumbnail),
               ),
             ),

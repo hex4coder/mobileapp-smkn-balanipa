@@ -7,6 +7,8 @@ class CartItem {
   String productName;
   int productPrice;
   int qty;
+  int stock;
+  String thumbnail;
 
   // otomatis dari perkalian qty * productPrice
   double total;
@@ -17,10 +19,31 @@ class CartItem {
   CartItem({
     required this.productId,
     required this.productName,
+    required this.thumbnail,
     required this.productPrice,
+    required this.stock,
     required this.qty,
     required this.total,
   });
+
+  factory CartItem.fromMap(Map<String, dynamic> data) {
+    return CartItem(
+      stock: data['stock'],
+      thumbnail: data['thumbnail'],
+      productId: data['id'], productName: data['name'], productPrice: data['price'], qty: data['qty'], total: data['total'].toDouble());
+  }
+
+  Map<String, dynamic> toJSON() {
+    return {
+      'stock': stock,
+      'id': productId,
+      'name': productName,
+      'price': productPrice,
+      'thumbnail': thumbnail,
+      'qty':qty,
+      'total':qty * productPrice
+    };
+  }
 }
 
 // class untuk menjalankan fungsi cart di mobile
@@ -45,12 +68,10 @@ class CartHelper extends GetxController {
 
   // operasi CRUD pada box
   Future<void> saveItems(List<CartItem> cartItems) async {
-    await reset();
-    await _box.write(_cartKey, cartItems);
+    await _box.write(_cartKey, cartItems.map((i) => i.toJSON()).toList());
     await _box.save();
 
-    // set new items cart
-    items = cartItems;
+    await loadItems();
   }
 
   Future<void> reset() async {
@@ -60,9 +81,9 @@ class CartHelper extends GetxController {
 
   // load items from cart
   Future<void> loadItems() async {
-    final cartItems = _box.read<List<CartItem>>(_cartKey);
+    final cartItems = _box.read(_cartKey);
     if (cartItems != null) {
-      items = cartItems;
+      items = (cartItems as List<dynamic>).map((i) => CartItem.fromMap(i)).toList();
     } else {
       items = [];
     }
@@ -78,6 +99,8 @@ class CartHelper extends GetxController {
 
     // create new item
     final item = CartItem(
+      stock: product.stok,
+      thumbnail: product.thumbnail,
         productId: product.id,
         productName: product.nama,
         productPrice: product.harga,
@@ -89,23 +112,72 @@ class CartHelper extends GetxController {
 
   // add new items to cart
   Future<void> addNewItem(CartItem item) async {
-    items.add(item);
+
+    bool found = false;
+      int index = -1;
+    int iterator = 0;
+    for(var i in items) {
+      if(i.productId == item.productId) {
+        index = iterator;
+        found = true;
+        break;
+      }
+      iterator = iterator + 1;
+    }
+
+    if (!found) {
+      // not found
+      items.add(item);
+    } else {
+    
+      final citem = items[index];
+      // found
+      await updateQty(item, citem.qty + 1);
+    }
+
     await saveCurrentItems();
   }
 
   // update current item
   Future<void> updateQty(CartItem item, int newQty) async {
-    item.qty = newQty;
     // update current items
-    final index = items.indexOf(item);
-    items.removeAt(index);
-    items.insert(index, item);
+     int index = -1;
+    int iterator = 0;
+    for(var i in items) {
+      if(i.productId == item.productId) {
+        index = iterator;
+        break;
+      }
+      iterator = iterator + 1;
+    }
+
+    if(index < 0) {
+      return;
+    }
+
+
+    items[index].qty = newQty;
 
     // update cart
     await saveCurrentItems();
   }
 
+  // hapus item dari cart
+  Future<void> deleteItem(CartItem item) async {
+    items.remove(item);
+    await saveCurrentItems();
+  }
+
   // gettters and setters
   List<CartItem> get items => _items;
+  double get total {
+    double tot = 0;
+
+   for(var i in _items) {
+    tot = tot + i.total;
+   }
+
+   return tot;
+  }
   set items(List<CartItem> newItems) => _items.assignAll(newItems);
 }

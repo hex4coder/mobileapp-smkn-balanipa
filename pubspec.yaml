@@ -39,6 +39,7 @@ dependencies:
   get: ^4.6.6
   dio: ^5.7.0
   get_storage: ^2.1.1
+  fluttertoast: ^8.2.10
 
 dev_dependencies:
   flutter_test:
