@@ -37,7 +37,11 @@ class ProductWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               child: Hero(
                 tag: 'product-thumbnail-${product.id}',
-                child: UiNetImage(pathImage: product.thumbnail),
+                child: UiNetImage(
+                  pathImage: product.thumbnail,
+                  fit: BoxFit.cover,
+                  size: const Size(300, 500),
+                ),
               ),
             ),
           ),

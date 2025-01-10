@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/configs/colors.dart';
 import 'package:myapp/screens/pages/cart_page.dart';
 import 'package:myapp/screens/pages/home_page.dart';
+import 'package:myapp/screens/pages/products_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,7 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // drawer?
-
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
@@ -35,10 +35,10 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         children: [
-          const HomePage(),
-          Container(
-            color: kPrimaryColor,
+          HomePage(
+            pageController: _pageController,
           ),
+          const ProductsPage(),
           const CartPage(),
           Container(
             color: Colors.blue,

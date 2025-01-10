@@ -1,10 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myapp/configs/colors.dart';
 import 'package:myapp/controllers/category.dart';
 import 'package:myapp/controllers/product.dart';
 import 'package:myapp/helpers/cart.dart';
-import 'package:myapp/helpers/ui_snackbar.dart';
 import 'package:myapp/screens/widgets/category_widget.dart';
 import 'package:myapp/screens/widgets/empty_widget.dart';
 import 'package:myapp/screens/widgets/header_row_widget.dart';
@@ -12,30 +13,30 @@ import 'package:myapp/screens/widgets/product_widget.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({required this.pageController, super.key});
+
+  final PageController pageController;
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  late TextEditingController _searchProductController;
-  bool _isVoiceSearchClicked = false;
-
   // untuk membuat header widget
   Container _headerWidget() {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-          color: kPrimaryColor, borderRadius: BorderRadius.circular(30)),
-      child: Column(
+      decoration: const BoxDecoration(
+        color: kPrimaryColor,
+      ),
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
+          SizedBox(
             height: 40,
           ),
-          const Text(
+          Text(
             "SMKN Balanipa",
             style: TextStyle(
               fontSize: 20,
@@ -43,94 +44,30 @@ class _HomePageState extends State<HomePage> {
               color: Colors.white,
             ),
           ),
-          const Text(
+          Text(
             "Salah satu Sekolah Pusat Keunggulan",
             style: TextStyle(
               fontSize: 12,
               color: Colors.white54,
             ),
           ),
-          const SizedBox(
+          SizedBox(
             height: 30,
           ),
-          _searchFieldWidget(),
         ],
       ),
-    );
-  }
-
-  // untuk membuat kotak pencarian
-  Stack _searchFieldWidget() {
-    return Stack(
-      children: [
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          padding: const EdgeInsets.all(8),
-          child: TextField(
-            controller: _searchProductController,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: "Cari produk disini...",
-              labelText: "Cari Produk",
-              labelStyle: TextStyle(
-                color: Colors.black.withOpacity(.3),
-                fontSize: 14,
-              ),
-              hintStyle: TextStyle(
-                color: Colors.black.withOpacity(.3),
-                fontSize: 14,
-              ),
-              prefixIcon: Icon(
-                Icons.search,
-                color: Colors.black.withOpacity(.2),
-              ),
-              suffixIcon: const Icon(
-                Icons.mic,
-                color: kPrimaryColor,
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          right: 8,
-          top: 8,
-          child: GestureDetector(
-            // onTap: () {},
-            onTapDown: (d) {
-              setState(() {
-                _isVoiceSearchClicked = true;
-              });
-            },
-            onTapUp: (d) {
-              setState(() {
-                _isVoiceSearchClicked = false;
-              });
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: _isVoiceSearchClicked
-                    ? kPrimaryColor.withOpacity(.2)
-                    : kPrimaryColor.withOpacity(.1),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 
   // inisialisasi data disini
   @override
   void initState() {
-    _searchProductController = TextEditingController();
+    Timer(const Duration(milliseconds: 100), () {
+      final ch = Get.find<CartHelper>();
+      ch.loadItems().then((_) {
+        // UiSnackbar.success('items', 'items loaded : ${ch.items.length}');
+      });
+    });
     super.initState();
   }
 
@@ -139,28 +76,112 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Container(
         color: Colors.grey.shade100,
-        padding: const EdgeInsets.all(10.0),
         height: MediaQuery.of(context).size.height * .7,
         child: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(
+                height: 60,
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Image.asset("assets/img/logo.png"),
+                      Stack(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              widget.pageController.animateToPage(2,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeIn);
+                            },
+                            icon: const Icon(
+                              Icons.shopping_cart,
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                          Positioned(
+                              top: 0,
+                              right: 0,
+                              child: GetX<CartHelper>(
+                                builder: (controller) => CircleAvatar(
+                                  backgroundColor: kSecondaryColor,
+                                  radius: 10,
+                                  child: Text(
+                                    controller.items.length.toString(),
+                                    style: const TextStyle(fontSize: 10),
+                                  ),
+                                ),
+                              ))
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
               _headerWidget(),
               const SizedBox(
                 height: 30,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     HeaderRowWidget(
+                      onTap: () {},
+                      title: "Kategori",
+                    ),
+                    SizedBox(
+                      height: 100,
+                      child: GetX<CategoryController>(builder: (controller) {
+                        if (controller.isloading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        if (controller.list.isEmpty) {
+                          return const Center(
+                            child: EmptyWidget(
+                                title: 'No Data',
+                                description:
+                                    'Tidak ada data kategori yang ditemukan'),
+                          );
+                        }
+
+                        return ListView.separated(
+                          separatorBuilder: (context, index) => const SizedBox(
+                            width: 30,
+                          ),
+                          itemBuilder: (context, index) {
+                            return CategoryWidget(
+                              category: controller.list[index],
+                              onTap: () {},
+                            );
+                          },
+                          shrinkWrap: true,
+                          itemCount: controller.list.length,
+                          scrollDirection: Axis.horizontal,
+                        );
+                      }),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    HeaderRowWidget(
                       onTap: () {
-                        Get.find<ProductController>().fetchPopularProducts(4);
+                        Get.find<ProductController>().fetchPopularProducts(7);
                       },
                       title: "Produk Populer",
                     ),
                     SizedBox(
-                      height: 200,
+                      height: 300,
                       child: GetX<ProductController>(
                           autoRemove: false,
                           builder: (controller) {
@@ -200,7 +221,9 @@ class _HomePageState extends State<HomePage> {
                                                 .addNewItemFromProduct(
                                                     controller
                                                         .listProduct[index]);
-                                           Fluttertoast.showToast(msg: 'Dimasukkan ke keranjang.');
+                                            Fluttertoast.showToast(
+                                                msg:
+                                                    'Dimasukkan ke keranjang.');
                                           },
                                           child: Container(
                                               padding: const EdgeInsets.all(8),
@@ -223,47 +246,6 @@ class _HomePageState extends State<HomePage> {
                               scrollDirection: Axis.horizontal,
                             );
                           }),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    HeaderRowWidget(
-                      onTap: () {},
-                      title: "Kategori",
-                    ),
-                    SizedBox(
-                      height: 100,
-                      child: GetX<CategoryController>(builder: (controller) {
-                        if (controller.isloading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-
-                        if (controller.list.isEmpty) {
-                          return const Center(
-                            child: EmptyWidget(
-                                title: 'No Data',
-                                description:
-                                    'Tidak ada data kategori yang ditemukan'),
-                          );
-                        }
-
-                        return ListView.separated(
-                          separatorBuilder: (context, index) => const SizedBox(
-                            width: 30,
-                          ),
-                          itemBuilder: (context, index) {
-                            return CategoryWidget(
-                              category: controller.list[index],
-                              onTap: () {},
-                            );
-                          },
-                          shrinkWrap: true,
-                          itemCount: controller.list.length,
-                          scrollDirection: Axis.horizontal,
-                        );
-                      }),
                     ),
                     const SizedBox(
                       height: 30,

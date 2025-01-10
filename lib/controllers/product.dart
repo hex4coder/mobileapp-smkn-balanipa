@@ -24,12 +24,26 @@ class DetailProductResponse {
   });
 }
 
+class ProductsByCategory {
+  int kategoriId;
+  String kategori;
+  List<Product> products;
+
+  ProductsByCategory(
+      {required this.kategoriId,
+      required this.kategori,
+      required this.products});
+}
+
 // berisi controller tentang product
 class ProductController extends GetxController {
   // vars
 
   // data store
   final _listProduct = <Product>[].obs;
+
+  // data store by cats
+  final _listByCats = <ProductsByCategory>[].obs;
 
   // loading indicator
   final _loading = false.obs;
@@ -61,7 +75,38 @@ class ProductController extends GetxController {
     }
 
     final listData = Product.getFromListDynamic(res.data);
+    listData.sort((a, b) => a.kategoriId.compareTo(b.kategoriId));
     setListProduct(listData);
+
+    // ambil semua kategori
+    _listByCats.clear();
+
+    final r = await _api.get('/categories');
+    if (r.status == ResponseType.error) {
+      return;
+    }
+
+    final cats = Category.fetchFromDynamicList(r.data);
+    if (cats == null) {
+      return;
+    }
+    List<ProductsByCategory> temps = [];
+    for (var cat in cats) {
+      List<Product> temp = [];
+      for (var product in listData) {
+        if (cat.id == product.kategoriId) {
+          temp.add(product);
+        }
+      }
+
+      if (temp.isNotEmpty) {
+        temps.add(ProductsByCategory(
+            kategoriId: cat.id, kategori: cat.namaKategori, products: temp));
+      }
+    }
+
+    _listByCats.assignAll(temps);
+
     _loading.value = false;
   }
 
@@ -140,5 +185,6 @@ class ProductController extends GetxController {
 
   // setters and getters
   List<Product> get listProduct => _listProduct;
+  List<ProductsByCategory> get listByCats => _listByCats;
   bool get isLoading => _loading.value;
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -17,9 +19,11 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   @override
   void initState() {
-    final ch = Get.find<CartHelper>();
-    ch.loadItems().then((_) {
-      // UiSnackbar.success('items', 'items loaded : ${ch.items.length}');
+    Timer(const Duration(milliseconds: 100), () {
+      final ch = Get.find<CartHelper>();
+      ch.loadItems().then((_) {
+        // UiSnackbar.success('items', 'items loaded : ${ch.items.length}');
+      });
     });
     super.initState();
   }
@@ -83,10 +87,13 @@ class _CartPageState extends State<CartPage> {
                                         actions: [
                                           TextButton(
                                               onPressed: () async {
-                                                final ch = Get.find<CartHelper>();
+                                                final ch =
+                                                    Get.find<CartHelper>();
                                                 await ch.deleteItem(item);
                                                 Get.back();
-                                                Fluttertoast.showToast(msg: 'Berhasil dikeluarkan');
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        'Berhasil dikeluarkan');
                                               },
                                               child: const Text(
                                                 "Ya",
@@ -102,7 +109,8 @@ class _CartPageState extends State<CartPage> {
                                               child: const Text(
                                                 "Tidak",
                                                 style: TextStyle(
-                                                    color: kPrimaryColor,),
+                                                  color: kPrimaryColor,
+                                                ),
                                               )),
                                         ],
                                       ));
@@ -142,6 +150,29 @@ class _CartPageState extends State<CartPage> {
                     height: 20,
                   ),
               itemCount: controller.items.length)),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          const Text(
+            "Total ",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(
+            width: 8,
+          ),
+          GetX<CartHelper>(
+            builder: (controller) => Text(
+                ServerConfig.convertPrice(controller.total.toInt()),
+                style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: kPrimaryColor)),
+          )
+        ],
+      ),
     );
   }
 }
