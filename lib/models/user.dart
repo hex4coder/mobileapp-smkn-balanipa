@@ -12,7 +12,34 @@ class User {
     required this.email,
     required this.password,
     required this.role,
+    this.address,
   });
+
+  factory User.fromMap(Map<String, dynamic> data) {
+    User u = User(
+        id: data['id'],
+        name: data['name'],
+        email: data['email'],
+        password: data['password'],
+        role: data['role']);
+
+    if (data['address'] != null && data['address'] != "") {
+      u.address = Address.fromMap(data['address']);
+    }
+
+    return u;
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'password': password,
+      'role': role,
+      'address': address == null ? "" : address!.toMap(),
+    };
+  }
 }
 
 class Address {
@@ -37,4 +64,31 @@ class Address {
     required this.nomorhp,
     required this.kodepos,
   });
+
+  factory Address.fromMap(Map<String, dynamic> data) {
+    return Address(
+        id: data['id'],
+        jalan: data['jalan'],
+        dusun: data['dusun'],
+        desa: data['desa'],
+        kecamatan: data['kecamatan'],
+        kota: data['kota'],
+        provinsi: data['provinsi'],
+        nomorhp: data['nomorhp'],
+        kodepos: data['kodepos']);
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'jalan': jalan,
+      'dusun': dusun,
+      'desa': desa,
+      'kecamatan': kecamatan,
+      'kota': kota,
+      'provinsi': provinsi,
+      'nomorhp': nomorhp,
+      'kodepos': kodepos,
+    };
+  }
 }

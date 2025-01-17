@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/configs/colors.dart';
+import 'package:myapp/screens/pages/account_page.dart';
 import 'package:myapp/screens/pages/cart_page.dart';
 import 'package:myapp/screens/pages/home_page.dart';
 import 'package:myapp/screens/pages/products_page.dart';
@@ -40,9 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const ProductsPage(),
           const CartPage(),
-          Container(
-            color: Colors.blue,
-          ),
+          const AccountPage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

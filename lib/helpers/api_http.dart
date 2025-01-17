@@ -50,35 +50,43 @@ class ApiHttp {
 
   // Get request dengan api response
   Future<ApiResponse> get(String path) async {
-    var r = await _get(path);
-
-    return r.data as ApiResponse;
+    try {
+      final r = await _dio.get(path);
+      return r.data as ApiResponse;
+    } on DioException catch (e) {
+      if (e.response == null) {
+        return ApiResponse.error('server tidak bisa dijangkau');
+      } else {
+        return ApiResponse.fromMap(e.response!.data);
+      }
+    }
   }
 
   // Post request dengan api response
   Future<ApiResponse> post(String path, Map<String, dynamic> data) async {
-    var r = await _post(path, data);
-    return r.data as ApiResponse;
+    try {
+      final r = await _dio.post(path, data: data);
+      return r.data as ApiResponse;
+    } on DioException catch (e) {
+      if (e.response == null) {
+        return ApiResponse.error('server tidak bisa dijangkau');
+      } else {
+        return ApiResponse.fromMap(e.response!.data);
+      }
+    }
   }
 
   // Delete request dengan api response
   Future<ApiResponse> delete(String path) async {
-    var r = await _delete(path);
-    return r.data as ApiResponse;
-  }
-
-  // get request
-  Future<Response> _get(String path) async {
-    return await _dio.get(path);
-  }
-
-  // post request
-  Future<Response> _post(String path, Map<String, dynamic> data) async {
-    return await _dio.post(path, data: data);
-  }
-
-  // delete request
-  Future<Response> _delete(String path) async {
-    return await _dio.delete(path);
+    try {
+      final r = await _dio.delete(path);
+      return r.data as ApiResponse;
+    } on DioException catch (e) {
+      if (e.response == null) {
+        return ApiResponse.error('server tidak bisa dijangkau');
+      } else {
+        return ApiResponse.fromMap(e.response!.data);
+      }
+    }
   }
 }

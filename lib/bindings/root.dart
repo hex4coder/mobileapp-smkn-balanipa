@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:myapp/controllers/auth.dart';
 import 'package:myapp/helpers/api_http.dart';
 import 'package:myapp/helpers/api_token.dart';
 import 'package:myapp/helpers/cart.dart';
@@ -12,6 +13,9 @@ class RootBinding implements Bindings {
 
     // inject api http helper
     Get.put<ApiHttp>(ApiHttp());
+
+    // inject auth controller
+    Get.put<AuthController>(AuthController());
 
     // inject cart helper
     Get.put<CartHelper>(CartHelper(), permanent: true);

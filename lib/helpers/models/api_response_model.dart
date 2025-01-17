@@ -37,4 +37,13 @@ class ApiResponse {
       return ApiResponse.error(rdata['message']);
     }
   }
+
+  static ApiResponse fromMap(Map<String, dynamic> data) {
+    return ApiResponse(
+        message: data['message'],
+        status: data['status'] == 'error'
+            ? ResponseType.error
+            : ResponseType.success,
+        data: data['data']);
+  }
 }
