@@ -114,14 +114,14 @@ class AuthController extends GetxController {
 
     final res = await _api.post('/login', req.toMap());
 
-    _loading.value = false;
-
     if (res.status == ResponseType.error) {
       UiSnackbar.error('Autentikasi gagal', res.message);
+      _loading.value = false;
       return false;
     }
 
     // TODO: login success, extract jwt token
+    _loading.value = false;
 
     return true;
   }

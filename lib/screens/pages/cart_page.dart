@@ -71,7 +71,7 @@ class _CartPageState extends State<CartPage> {
                       children: [
                         Text(ServerConfig.convertPrice(item.productPrice)),
                         Container(
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                               // border: Border.all(color: Colors.grey)
                               ),
                           child: Row(
