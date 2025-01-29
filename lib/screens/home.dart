@@ -40,7 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
             pageController: _pageController,
           ),
           const ProductsPage(),
-          const CartPage(),
+          CartPage(
+            pageController: _pageController,
+          ),
           const AccountPage(),
         ],
       ),

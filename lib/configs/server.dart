@@ -3,7 +3,7 @@
 class ServerConfig {
   // base url
   static String kServerBaseAPI = "https://ecom-api.smknbalanipa.sch.id";
-  // static String kServerBaseAPI = "http://89.116.20.48:3000";
+  // static String kServerBaseAPI = "http://10.0.2.2:3000";
   static String kEcommerceServerBaseURL =
       "https://ecommerce.smknbalanipa.sch.id";
 

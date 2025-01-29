@@ -16,40 +16,39 @@ class CategoryWidget extends StatelessWidget {
       onTap: onTap,
       child: Column(
         children: [
-          Expanded(
-            child: SizedBox(
-              width: 80,
-              child: Card(
-                elevation: 10,
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                shadowColor: Colors.black.withValues(alpha: .2),
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.network(
-                      category.gambar == null
-                          ? ServerConfig.kNoImage
-                          : ServerConfig.getImageUrl(category.gambar!),
-                      fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        }
+          SizedBox(
+            width: 80,
+            height: 80,
+            child: Card(
+              elevation: 10,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
+              shadowColor: Colors.black.withValues(alpha: .2),
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                    category.gambar == null
+                        ? ServerConfig.kNoImage
+                        : ServerConfig.getImageUrl(category.gambar!),
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
 
-                        return Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
-                          ),
-                        );
-                      },
-                    ),
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),

@@ -3,6 +3,7 @@ import 'package:myapp/controllers/auth.dart';
 import 'package:myapp/helpers/api_http.dart';
 import 'package:myapp/helpers/api_token.dart';
 import 'package:myapp/helpers/cart.dart';
+import 'package:myapp/helpers/user_helper.dart';
 // import 'package:myapp/controllers/product.dart';
 
 class RootBinding implements Bindings {
@@ -10,6 +11,9 @@ class RootBinding implements Bindings {
   void dependencies() {
     // coba inject api helper
     Get.put<ApiTokenHelper>(ApiTokenHelper(), permanent: true);
+
+    // user helper
+    Get.put<UserHelper>(UserHelper());
 
     // inject api http helper
     Get.put<ApiHttp>(ApiHttp());

@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                       title: "Kategori",
                     ),
                     SizedBox(
-                      height: 100,
+                      height: 150,
                       child: GetX<CategoryController>(builder: (controller) {
                         if (controller.isloading) {
                           return const Center(

@@ -59,7 +59,7 @@ class ProductWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      product.nama,
+                      ServerConfig.capitalize(product.nama),
                       maxLines: 1,
                       overflow: TextOverflow.clip,
                       style: TextStyle(

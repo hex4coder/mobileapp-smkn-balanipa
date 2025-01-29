@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:myapp/helpers/api_http.dart';
+import 'package:myapp/helpers/api_token.dart';
 import 'package:myapp/helpers/models/api_response_model.dart';
 import 'package:myapp/helpers/ui_snackbar.dart';
+import 'package:myapp/helpers/user_helper.dart';
 import 'package:myapp/models/user.dart';
 
 class RegisterUserRequest {
@@ -86,27 +88,33 @@ class LoginUserRequest {
 class AuthController extends GetxController {
   // variables
   late Rx<User?> _user;
-  late GetStorage _storage;
   final _loading = false.obs;
 
   // api helper
   late ApiHttp _api;
+  late ApiTokenHelper _token;
+  late UserHelper _userHelper;
 
   // constructor
   AuthController() {
     _user = Rx<User?>(null);
+    _token = Get.find<ApiTokenHelper>();
     _api = Get.find<ApiHttp>();
+    _userHelper = Get.find<UserHelper>();
   }
 
   @override
   void onInit() {
     super.onInit();
-    _storage = GetStorage("user-profile");
     initialize().then((_) {});
   }
 
   // load init
-  Future<void> initialize() async {}
+  Future<void> initialize() async {
+    // load user from storage if exists
+    final user = await _userHelper.load();
+    _user.value = user;
+  }
 
   // functions
   Future<bool> login(LoginUserRequest req) async {
@@ -120,7 +128,42 @@ class AuthController extends GetxController {
       return false;
     }
 
-    // TODO: login success, extract jwt token
+    // extract token dari server
+    final String newToken = res.data['jwt'];
+    if (newToken.isEmpty) return false;
+
+    // lakukan penyimpanan jwt di local storage
+    await _token.save(newToken);
+
+    // buat http baru dengan token helper
+    final newApi =
+        Get.put(ApiHttp()..newApiHttpWithTokenInterceptor(), permanent: true);
+    newApi.newApiHttpWithTokenInterceptor();
+    _api = newApi;
+
+    // ambil detail user dari server
+    final reqUser = await _api.get('/user');
+    if (reqUser.status == ResponseType.error) {
+      UiSnackbar.error('Request user error', reqUser.message);
+      _loading.value = false;
+      return false;
+    }
+    final user = User.fromMap(reqUser.data);
+
+    // ambil user address
+    final userAddressReq = await _api.get('/user-address');
+    if (userAddressReq.status == ResponseType.error) {
+      UiSnackbar.error('User address error', userAddressReq.message);
+      _loading.value = false;
+      return false;
+    }
+    final userAddress = Address.fromMap(userAddressReq.data);
+    user.address = userAddress;
+
+    // simpan user ke local storage
+    await _userHelper.save(user);
+
+    // update status login
     _loading.value = false;
 
     return true;
