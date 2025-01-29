@@ -221,9 +221,6 @@ class _HomePageState extends State<HomePage> {
                                                 .addNewItemFromProduct(
                                                     controller
                                                         .listProduct[index]);
-                                            Fluttertoast.showToast(
-                                                msg:
-                                                    'Dimasukkan ke keranjang.');
                                           },
                                           child: Container(
                                               padding: const EdgeInsets.all(8),

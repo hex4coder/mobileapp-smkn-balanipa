@@ -15,7 +15,8 @@ class User {
     this.address,
   });
 
-  factory User.fromMap(Map<String, dynamic> data) {
+  factory User.fromMap(Map<String, dynamic> data,
+      {bool withoutAddress = true}) {
     User u = User(
         id: data['id'],
         name: data['name'],
@@ -23,8 +24,12 @@ class User {
         password: data['password'],
         role: data['role']);
 
-    if (data['address'] != null && data['address'] != "") {
-      u.address = Address.fromMap(data['address']);
+    if (withoutAddress == false) {
+      if (data['address'] != null &&
+          data['address'] != "" &&
+          data['address']['id'] != null) {
+        u.address = Address.fromMap(data['address']);
+      }
     }
 
     return u;

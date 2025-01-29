@@ -5,7 +5,21 @@ import 'package:get/get.dart';
 import 'package:myapp/configs/colors.dart';
 import 'package:myapp/controllers/auth.dart';
 import 'package:myapp/helpers/ui_snackbar.dart';
+import 'package:myapp/models/user.dart';
 import 'package:myapp/screens/pages/register_page.dart';
+import 'package:myapp/screens/widgets/order_status.dart';
+
+class OrderStatus {
+  String text;
+  IconData icon;
+  String code;
+  Color activeColor;
+  OrderStatus(
+      {required this.text,
+      required this.icon,
+      required this.code,
+      this.activeColor = kPrimaryColor});
+}
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -16,6 +30,7 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   late GlobalKey<FormBuilderState> _fbKey;
+  String currentSelectedOrderStatus = 'all';
 
   @override
   void initState() {
@@ -27,7 +42,11 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: _notSignedUser(),
+        child: GetX<AuthController>(builder: (controller) {
+          if (controller.isLoggedIn) return _signedUser(controller.user!);
+
+          return _notSignedUser();
+        }),
       ),
     );
   }
@@ -167,33 +186,77 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  Widget _signedUser() {
+  Widget _signedUser(User user) {
+    List<OrderStatus> listOrderStatus = [
+      OrderStatus(text: 'Semua', icon: Icons.list, code: 'all'),
+      OrderStatus(text: 'Baru', icon: Icons.note, code: 'baru'),
+      OrderStatus(
+          text: 'Diproses', icon: Icons.settings, code: 'sedang diproses'),
+      OrderStatus(
+          text: 'Dikirim', icon: Icons.fire_truck, code: 'sudah dikirim'),
+      OrderStatus(
+          text: 'Selesai',
+          icon: Icons.check,
+          code: 'selesai',
+          activeColor: Colors.teal),
+      OrderStatus(
+          text: 'Dibatalkan',
+          icon: Icons.cancel,
+          code: 'dibatalkan',
+          activeColor: Colors.red),
+    ];
+
     return CustomScrollView(
       slivers: [
         // appbar
-        const SliverAppBar(
-          title: Text("data"),
+        SliverAppBar(
+          title: Text("Hi, ${user.name}"),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.people),
+              tooltip: "Informasi Akun",
+            ),
+            IconButton(
+                onPressed: () {},
+                tooltip: "Sign Out",
+                icon: const Icon(
+                  Icons.exit_to_app,
+                  color: Colors.red,
+                ))
+          ],
         ),
         // order
         SliverToBoxAdapter(
           child: SizedBox(
-            height: 60,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return TextButton.icon(
-                  onPressed: () {},
-                  label: const Text("Sudah dikirim"),
-                  icon: const Icon(Icons.fire_truck),
-                );
-              },
-              separatorBuilder: (context, index) => const SizedBox(width: 10),
-              itemCount: 4,
+            height: 40,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return OrderStatusWidget(
+                    onTap: () {
+                      setState(() {
+                        currentSelectedOrderStatus =
+                            listOrderStatus[index].code;
+                      });
+                    },
+                    text: listOrderStatus[index].text,
+                    icon: listOrderStatus[index].icon,
+                    activeColor: listOrderStatus[index].activeColor,
+                    isSelected: listOrderStatus[index].code ==
+                        currentSelectedOrderStatus,
+                  );
+                },
+                separatorBuilder: (context, index) => const SizedBox(width: 10),
+                itemCount: listOrderStatus.length,
+              ),
             ),
           ),
         ),
 
-        // account information
+        // order list
       ],
     );
   }

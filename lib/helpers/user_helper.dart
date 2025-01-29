@@ -36,7 +36,8 @@ class UserHelper {
       return null;
     }
 
-    final user = User.fromMap(userMap);
+    final user = User.fromMap(userMap, withoutAddress: false);
+    print(user);
     return user;
   }
 }

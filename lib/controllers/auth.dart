@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:myapp/helpers/api_http.dart';
 import 'package:myapp/helpers/api_token.dart';
 import 'package:myapp/helpers/models/api_response_model.dart';
@@ -148,7 +147,9 @@ class AuthController extends GetxController {
       _loading.value = false;
       return false;
     }
-    final user = User.fromMap(reqUser.data);
+    final user = User.fromMap(
+      reqUser.data,
+    );
 
     // ambil user address
     final userAddressReq = await _api.get('/user-address');
@@ -162,6 +163,9 @@ class AuthController extends GetxController {
 
     // simpan user ke local storage
     await _userHelper.save(user);
+
+    // update user rx
+    _user.value = user;
 
     // update status login
     _loading.value = false;
@@ -189,5 +193,4 @@ class AuthController extends GetxController {
   bool get isloading => _loading.value;
 
   User? get user => _user.value;
-  set user(User? value) => _user.value = value;
 }

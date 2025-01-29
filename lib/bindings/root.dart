@@ -16,7 +16,7 @@ class RootBinding implements Bindings {
     Get.put<UserHelper>(UserHelper());
 
     // inject api http helper
-    Get.put<ApiHttp>(ApiHttp());
+    Get.put<ApiHttp>(ApiHttp(), permanent: true);
 
     // inject auth controller
     Get.put<AuthController>(AuthController());

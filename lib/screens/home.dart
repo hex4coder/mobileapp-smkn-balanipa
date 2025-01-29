@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:myapp/configs/colors.dart';
+import 'package:myapp/controllers/auth.dart';
 import 'package:myapp/screens/pages/account_page.dart';
 import 'package:myapp/screens/pages/cart_page.dart';
 import 'package:myapp/screens/pages/home_page.dart';
@@ -19,6 +21,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _pageController = PageController(initialPage: _currentPageIndex);
+// load current user if exists
+    final AuthController authController = Get.find();
+    authController.initialize();
+
     super.initState();
   }
 
