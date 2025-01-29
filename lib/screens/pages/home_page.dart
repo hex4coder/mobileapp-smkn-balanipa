@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myapp/configs/colors.dart';
 import 'package:myapp/controllers/category.dart';
 import 'package:myapp/controllers/product.dart';
@@ -11,6 +10,7 @@ import 'package:myapp/screens/widgets/empty_widget.dart';
 import 'package:myapp/screens/widgets/header_row_widget.dart';
 import 'package:myapp/screens/widgets/product_widget.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({required this.pageController, super.key});
@@ -30,13 +30,13 @@ class _HomePageState extends State<HomePage> {
       decoration: const BoxDecoration(
         color: kPrimaryColor,
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
+          const SizedBox(
             height: 40,
           ),
-          Text(
+          const Text(
             "SMKN Balanipa",
             style: TextStyle(
               fontSize: 20,
@@ -44,14 +44,28 @@ class _HomePageState extends State<HomePage> {
               color: Colors.white,
             ),
           ),
-          Text(
+          const Text(
             "Salah satu Sekolah Pusat Keunggulan",
             style: TextStyle(
               fontSize: 12,
               color: Colors.white54,
             ),
           ),
-          SizedBox(
+          TextButton.icon(
+            onPressed: () async {
+              // web url
+              const String url = "https://smknbalanipa.sch.id";
+              final uri = Uri.parse(url);
+              await launchUrl(uri);
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+              iconColor: Colors.white,
+            ),
+            icon: const Icon(Icons.web),
+            label: const Text("Lihat Web"),
+          ),
+          const SizedBox(
             height: 30,
           ),
         ],

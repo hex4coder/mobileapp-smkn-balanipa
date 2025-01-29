@@ -41,6 +41,7 @@ dependencies:
   fluttertoast: ^8.2.10
   flutter_form_builder: ^9.7.0 # form builder untuk generate form ke user
   form_builder_validators: ^11.1.1
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
