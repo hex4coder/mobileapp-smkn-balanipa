@@ -3,7 +3,6 @@
     <!-- untuk akses ke server dengan jaringan -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
-
     <application
         android:label="myapp"
         android:name="${applicationName}"

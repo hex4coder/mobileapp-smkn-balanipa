@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:myapp/configs/colors.dart';
@@ -218,7 +219,13 @@ class _AccountPageState extends State<AccountPage> {
               tooltip: "Informasi Akun",
             ),
             IconButton(
-                onPressed: () {},
+                onPressed: () async {
+                  final AuthController authController = Get.find();
+                  await authController.signout();
+
+                  Fluttertoast.showToast(
+                      msg: 'Anda telah keluar dari akun anda!');
+                },
                 tooltip: "Sign Out",
                 icon: const Icon(
                   Icons.exit_to_app,

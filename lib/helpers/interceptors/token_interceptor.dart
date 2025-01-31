@@ -9,7 +9,11 @@ class TokenInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     final t = Get.find<ApiTokenHelper>();
-    options.headers['Authorization'] = t.getBearer();
+
+    if (t.hasToken()) {
+      options.headers['Authorization'] = t.getBearer();
+    }
+
     super.onRequest(options, handler);
   }
 }

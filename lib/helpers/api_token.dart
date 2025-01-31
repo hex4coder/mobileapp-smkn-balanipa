@@ -48,6 +48,10 @@ class ApiTokenHelper {
 
   // reset storage
   Future<void> reset() async {
+    if (hasToken()) {
+      await remove();
+    }
+
     await _box.erase();
   }
 }

@@ -9,7 +9,6 @@ import 'package:myapp/helpers/cart.dart';
 import 'package:myapp/helpers/ui_snackbar.dart';
 import 'package:myapp/screens/product/detail.dart';
 import 'package:myapp/screens/widgets/network_image.dart';
-import 'package:myapp/screens/widgets/product_widget.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({super.key});

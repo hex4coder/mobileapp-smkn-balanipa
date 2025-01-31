@@ -188,6 +188,22 @@ class AuthController extends GetxController {
     return true;
   }
 
+  Future<void> signout() async {
+    _loading.value = true;
+
+    // clear token
+    final tokenHandler = Get.find<ApiTokenHelper>();
+    await tokenHandler.reset();
+
+    // remove user
+    await _userHelper.reset();
+
+    // set user to null
+    _user.value = null;
+
+    _loading.value = false;
+  }
+
   // getter and setter
   bool get isLoggedIn => _user.value?.id != null;
   bool get isloading => _loading.value;

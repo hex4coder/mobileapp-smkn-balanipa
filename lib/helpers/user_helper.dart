@@ -18,8 +18,14 @@ class UserHelper {
 
   // reset
   Future<void> reset() async {
-    await _box.remove(userKey);
+    if (hasUser()) {
+      await _box.remove(userKey);
+    }
     await _box.erase();
+  }
+
+  bool hasUser() {
+    return _box.hasData(userKey);
   }
 
   // save to storage
