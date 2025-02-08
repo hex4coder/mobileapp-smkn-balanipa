@@ -148,7 +148,12 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     HeaderRowWidget(
-                      onTap: () {},
+                      onTap: () {
+                        // open all products page
+                        widget.pageController.animateToPage(1,
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeIn);
+                      },
                       title: "Kategori",
                     ),
                     SizedBox(
@@ -190,7 +195,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                     HeaderRowWidget(
                       onTap: () {
-                        Get.find<ProductController>().fetchPopularProducts(7);
+                        // open all products page
+                        widget.pageController.animateToPage(1,
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeIn);
                       },
                       title: "Produk Populer",
                     ),
