@@ -15,7 +15,7 @@ class Product {
   String thumbnail;
   int kategoriId;
   int brandId;
-  DateTime deletedAt;
+  DateTime? deletedAt;
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -52,7 +52,7 @@ class Product {
         thumbnail: json["thumbnail"],
         kategoriId: json["kategori_id"],
         brandId: json["brand_id"],
-        deletedAt: DateTime.parse(json["deleted_at"]),
+        deletedAt: json['deleted_at'] == "0001-01-01T00:00:00Z" ? null : DateTime.parse(json["deleted_at"]),
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
       );
@@ -67,7 +67,7 @@ class Product {
         "thumbnail": thumbnail,
         "kategori_id": kategoriId,
         "brand_id": brandId,
-        "deleted_at": deletedAt.toIso8601String(),
+        "deleted_at": deletedAt?.toIso8601String(),
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
       };

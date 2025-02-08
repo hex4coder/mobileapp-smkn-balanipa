@@ -5,7 +5,7 @@ class Brand {
   String name;
   String slug;
   String logo;
-  DateTime deletedAt;
+  DateTime? deletedAt;
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -28,7 +28,7 @@ class Brand {
         name: json["name"],
         slug: json["slug"],
         logo: json["logo"],
-        deletedAt: DateTime.parse(json["deleted_at"]),
+        deletedAt: json['deleted_at'] == "0001-01-01T00:00:00Z" ? null : DateTime.parse(json["deleted_at"]),
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
       );
@@ -38,7 +38,7 @@ class Brand {
         "name": name,
         "slug": slug,
         "logo": logo,
-        "deleted_at": deletedAt.toIso8601String(),
+        "deleted_at": deletedAt?.toIso8601String(),
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
       };
