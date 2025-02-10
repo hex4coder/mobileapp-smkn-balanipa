@@ -212,6 +212,8 @@ class _CartPageState extends State<CartPage> {
                                       color: Colors.grey,
                                       size: 16,
                                     )),
+
+                                //TODO: Tambahkan pemilihan ukuran produk
                               ],
                             ),
                           ),

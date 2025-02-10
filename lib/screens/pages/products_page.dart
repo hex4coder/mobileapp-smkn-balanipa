@@ -95,7 +95,7 @@ class _ProductsPageState extends State<ProductsPage> {
                         child: UiNetImage(
                           pathImage: product.thumbnail,
                           fit: BoxFit.cover,
-                          size: Size(MediaQuery.of(context).size.width, 250),
+                          size: Size(MediaQuery.of(context).size.width, 200),
                         ),
                       ),
                     ),

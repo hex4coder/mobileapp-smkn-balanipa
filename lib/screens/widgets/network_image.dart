@@ -31,12 +31,15 @@ class UiNetImage extends StatelessWidget {
           height: autoSize ? double.infinity :  size.height,
           child: Column(
             children: [
-              CircularProgressIndicator(
+              SizedBox(height: 20, width: 20, child: 
+                CircularProgressIndicator(
+                  strokeWidth: 2.4,
                 value: loadingProgress.expectedTotalBytes != null
                     ? loadingProgress.cumulativeBytesLoaded /
                         loadingProgress.expectedTotalBytes!
                     : null,
               ),
+                ),
               const SizedBox(
                 height: 2,
               ),

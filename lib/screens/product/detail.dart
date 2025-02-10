@@ -95,7 +95,7 @@ class _DetailProductState extends State<DetailProduct> {
                 Text(
                   widget.detailProduct.kategori.namaKategori,
                   style: const TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                     color: Colors.grey,
                   ),
                 ),
@@ -110,52 +110,23 @@ class _DetailProductState extends State<DetailProduct> {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 5,
+                ),
+                Text(
+                  "By : ${widget.detailProduct.brand.name}",
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: kPrimaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(
-                      width: (MediaQuery.of(context).size.width / 2) - 20,
-                      height: (MediaQuery.of(context).size.width / 2) - 20,
-                      child: Card(
-                        elevation: 0,
-                        color: kPrimaryColor.withValues(alpha: .1),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(40),
-                                child: UiNetImage(
-                                  size: const Size(100, 100),
-                                    pathImage: 
-                                        widget.detailProduct.brand.logo),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                widget.detailProduct.brand.name,
-                                overflow: TextOverflow.clip,
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                    
                         Text(ServerConfig.convertPrice(widget.detailProduct.product.harga), style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -163,7 +134,9 @@ class _DetailProductState extends State<DetailProduct> {
                         ),),
 
 
-                        const SizedBox(height: 10,),
+                        
+ 
+                    const SizedBox(height: 10,),
                         RowInfoIcon(
                           icon: widget.detailProduct.product.isPopular
                               ? Icons.check
@@ -175,9 +148,6 @@ class _DetailProductState extends State<DetailProduct> {
                               ? Colors.green
                               : kSecondaryColor,
                         ), 
- 
-                      ],
-                    ),
                   ],
                 ),
 const SizedBox(height: 20,),

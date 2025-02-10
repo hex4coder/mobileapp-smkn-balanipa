@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -34,6 +36,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   late CartHelper _cartHelper;
   late ApiHttp _apiHttp;
   late AuthController _authController;
+  File? buktiPembayaran;
 
   TipePembayaran _tipePembayaran = TipePembayaran.manual;
   final TextEditingController _promoController = TextEditingController();
@@ -56,6 +59,86 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     super.initState();
   }
 
+  // TODO: Tambahkan tempat untuk keterangan dari produk jika ada
+
+  // fungsi untuk kirim data ke server
+  void proccessCheckout() async {
+    // validasi data
+    if(buktiPembayaran == null) {
+      Fluttertoast.showToast(msg: "Silahkan lampirkan bukti pembayaran anda!");
+      return;
+    }
+
+    // check user login
+    if(_authController.user == null) {
+      Fluttertoast.showToast(msg: "Data pengguna tidak bisa diload");
+      return;
+    }
+
+    // konfirmasi
+    final konfirmasi = await Get.dialog(
+        AlertDialog(
+            title: const Text('Konfirmasi!'),
+            content: const SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Benar bahwa apa yang saya lakukan sudah benar?'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ya', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: kPrimaryColor)),
+                onPressed: () {
+                  Get.back(result: 'ya');
+                },
+              ),
+              TextButton(
+                child: const Text('Tidak', style: TextStyle(fontSize: 12, color: Colors.amber)),
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+            ],
+          ),
+      );
+
+    // jika di konfirmasi
+    if(konfirmasi == 'ya') {
+      // buat form data
+      FormData formData = FormData.fromMap({
+        'bukti_transfer': await MultipartFile.fromFile(buktiPembayaran.path, filename: buktiPembayaran),
+        'total_harga_produk': _cartHelper.total,
+        'total_diskon': _diskon,
+        'total_bayar': totalAkhir,
+        });
+
+      // jika ada diskon maka, tambahkan kode promo
+      if(_statusKodePromo == StatusKodePromo.ada) {
+        formData.fields.add(MapEntry('code_promo', _promoController.text));
+      }
+
+      // sertakan user id
+      final userId = _authController.user!.id;
+      formData.fields.add(MapEntry('user_id', userId));
+
+      // proses detail pesanan berdasarkan data pada cart
+      //TODO: Menambahkan item dari cart kedalam field form data
+      //TODO: konversi ke jsonstring sebelum penambahan ke array data
+      List<Map<String, dynamic>> details = [];
+
+      // iterasi cart item
+
+      String detailProductJSONString = jsonEncode(details);
+      formData.fields.add(MapEntry('detail', detailProductJSONString));
+
+      // proses data untuk dikirim ke server
+    }
+  }
+
+
+
+  // render UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -289,21 +372,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   strokeWidth: 3,
                                 ),
                               ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              const Text(
-                                "Mengecek promo...",
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontStyle: FontStyle.italic,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.grey,
-                                ),
-                              ),
+                              
                             ],
                           ],
                         ),
+                        if(_mengecekPromo) ...[
+                          const SizedBox(height: 20),
+                          const Text(
+                            "Mengecek promo...",
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                        
                         const SizedBox(
                           height: 20,
                         ),
@@ -403,7 +488,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 // transfer manual
                 if (_tipePembayaran == TipePembayaran.manual) ...[
                   InfoWidget(
-                    title: "Pembayaran",
+                    title: "Bukti Pembayaran",
                     icon: Icons.qr_code,
                     content: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -415,7 +500,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           height: 400,
                           width: double.infinity,
                           child: PhotoPicker(
-                            onChanged: (file) {},
+                            onChanged: (file) {
+                              setState(() {
+                                  buktiPembayaran = file;
+                                });
+                              },
                           ),
                         ),
                         const SizedBox(
@@ -425,6 +514,36 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ),
                   ),
                 ],
+
+
+
+                // spacer
+                const SizedBox(height: 20),
+
+
+
+                // checkout button
+                Row(
+                  children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                              backgroundColor: kPrimaryColor,
+                              iconColor: Colors.white,
+                            ),
+                          onPressed: proccessCheckout,
+                          icon: const Icon(Icons.send),
+                          label: Text("Proses", style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                
               ],
             ),
           ),

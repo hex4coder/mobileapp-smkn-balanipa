@@ -15,6 +15,7 @@ class CartItem {
   double total;
 
   String? keterangan;
+  String? ukuran;
 
   // constructor
   CartItem({
@@ -25,11 +26,15 @@ class CartItem {
     required this.stock,
     required this.qty,
     required this.total,
+    this.ukuran = 'L',
+    this.keterangan = '',
   });
 
   factory CartItem.fromMap(Map<String, dynamic> data) {
     return CartItem(
         stock: data['stock'],
+        ukuran: data['ukuran'],
+        keterangan: data['keterangan'],
         thumbnail: data['thumbnail'],
         productId: data['id'],
         productName: data['name'],
@@ -40,6 +45,8 @@ class CartItem {
 
   Map<String, dynamic> toJSON() {
     return {
+      'keterangan': keterangan ?? '',
+      'ukuran': ukuran ?? '',
       'stock': stock,
       'id': productId,
       'name': productName,
