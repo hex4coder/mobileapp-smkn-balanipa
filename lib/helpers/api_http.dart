@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:get/get.dart';
 import 'package:myapp/configs/server.dart';
+import 'package:myapp/helpers/api_token.dart';
 import 'package:myapp/helpers/interceptors/response_interceptor.dart';
 import 'package:myapp/helpers/interceptors/token_interceptor.dart';
 import 'package:myapp/helpers/models/api_response_model.dart';
@@ -10,6 +12,10 @@ import 'package:myapp/helpers/models/api_response_model.dart';
 class ApiHttp {
   // inisialisasi object dio
   late Dio _dio;
+
+  late ApiTokenHelper _tokenHelper;
+
+  final String errTokenExpired = "token has invalid claims: token is expired";
 
   // konfigurasi untuk base url
   // dan option lainnya
@@ -30,8 +36,14 @@ class ApiHttp {
 
   // inisialisasi
   ApiHttp() {
+    _tokenHelper = Get.find();
+
     _dio = Dio();
     _configure();
+
+    if (_tokenHelper.hasToken()) {
+      newApiHttpWithTokenInterceptor();
+    }
   }
 
   // buat api service dengan token interceptor
@@ -52,7 +64,13 @@ class ApiHttp {
   Future<ApiResponse> get(String path) async {
     try {
       final r = await _dio.get(path);
-      return r.data as ApiResponse;
+      final res = r.data as ApiResponse;
+
+      if (res.message == errTokenExpired) {
+        return ApiResponse.error(errTokenExpired);
+      } else {
+        return res;
+      }
     } on DioException catch (e) {
       if (e.response == null) {
         return ApiResponse.error('server tidak bisa dijangkau');

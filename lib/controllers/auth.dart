@@ -209,4 +209,6 @@ class AuthController extends GetxController {
   bool get isloading => _loading.value;
 
   User? get user => _user.value;
+
+  String get tokenError => "token has invalid claims: token is expired";
 }

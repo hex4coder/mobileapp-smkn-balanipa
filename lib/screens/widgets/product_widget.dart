@@ -69,7 +69,7 @@ class ProductWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "${ServerConfig.capitalize(product.deskripsi.substring(0, 30))}...",
+                      "${ServerConfig.capitalize(product.deskripsi.substring(0, product.deskripsi.length > 30 ? 30 : product.deskripsi.length))}...",
                       overflow: TextOverflow.clip,
                       maxLines: 1,
                       style: TextStyle(

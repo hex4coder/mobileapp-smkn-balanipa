@@ -5,7 +5,9 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:myapp/configs/colors.dart';
 import 'package:myapp/controllers/auth.dart';
+import 'package:myapp/helpers/api_token.dart';
 import 'package:myapp/helpers/ui_snackbar.dart';
+import 'package:myapp/helpers/user_helper.dart';
 import 'package:myapp/models/user.dart';
 import 'package:myapp/screens/pages/register_page.dart';
 import 'package:myapp/screens/widgets/order_status.dart';
@@ -33,9 +35,16 @@ class _AccountPageState extends State<AccountPage> {
   late GlobalKey<FormBuilderState> _fbKey;
   String currentSelectedOrderStatus = 'all';
 
+  late ApiTokenHelper _apiTokenHelper;
+  late UserHelper _userHelper;
+
   @override
   void initState() {
     _fbKey = GlobalKey<FormBuilderState>();
+
+    _apiTokenHelper = Get.find();
+    _userHelper = Get.find();
+
     super.initState();
   }
 

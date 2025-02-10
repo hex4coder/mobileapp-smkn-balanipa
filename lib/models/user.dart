@@ -96,4 +96,8 @@ class Address {
       'kodepos': kodepos,
     };
   }
+
+  String toAddress() {
+    return "$jalan Dusun $dusun, Desa $desa, Kec. $kecamatan, Kab. $kota, $provinsi KodePOS $kodepos";
+  }
 }
