@@ -35,15 +35,15 @@ class _AccountPageState extends State<AccountPage> {
   late GlobalKey<FormBuilderState> _fbKey;
   String currentSelectedOrderStatus = 'all';
 
-  late ApiTokenHelper _apiTokenHelper;
-  late UserHelper _userHelper;
+  late ApiTokenHelper apiTokenHelper;
+  late UserHelper userHelper;
 
   @override
   void initState() {
     _fbKey = GlobalKey<FormBuilderState>();
 
-    _apiTokenHelper = Get.find();
-    _userHelper = Get.find();
+    apiTokenHelper = Get.find();
+    userHelper = Get.find();
 
     super.initState();
   }

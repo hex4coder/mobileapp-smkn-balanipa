@@ -16,6 +16,7 @@ class CartItem {
 
   String? keterangan;
   String? ukuran;
+  List<String> listUkuran;
 
   // constructor
   CartItem({
@@ -26,12 +27,14 @@ class CartItem {
     required this.stock,
     required this.qty,
     required this.total,
+    required this.listUkuran,
     this.ukuran = 'L',
     this.keterangan = '',
   });
 
   factory CartItem.fromMap(Map<String, dynamic> data) {
     return CartItem(
+        listUkuran: data['list_ukuran'] ?? [],
         stock: data['stock'],
         ukuran: data['ukuran'],
         keterangan: data['keterangan'],
@@ -112,6 +115,7 @@ class CartHelper extends GetxController {
 
     // create new item
     final item = CartItem(
+      listUkuran: [],
         stock: product.stok,
         thumbnail: product.thumbnail,
         productId: product.id,

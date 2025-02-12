@@ -126,101 +126,7 @@ class _CartPageState extends State<CartPage> {
 
                   final item = controller.items[index];
 
-                  return ListTile(
-                    leading: SizedBox(
-                        width: 70,
-                        child: UiNetImage(pathImage: item.thumbnail)),
-                    title: Text(item.productName.toUpperCase()),
-                    trailing: Text(
-                      ServerConfig.convertPrice(item.total.toInt()),
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: kPrimaryColor),
-                    ),
-                    subtitle: DefaultTextStyle(
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(ServerConfig.convertPrice(item.productPrice)),
-                          Container(
-                            decoration: const BoxDecoration(
-                                // border: Border.all(color: Colors.grey)
-                                ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                    onPressed: () async {
-                                      if (item.qty < 2) {
-                                        Get.dialog(AlertDialog(
-                                          title: const Text("Delete?"),
-                                          content: const Text(
-                                              "Buang produk ini dari keranjang?"),
-                                          actions: [
-                                            TextButton(
-                                                onPressed: () async {
-                                                  final ch =
-                                                      Get.find<CartHelper>();
-                                                  await ch.deleteItem(item);
-                                                  Get.back();
-                                                  Fluttertoast.showToast(
-                                                      msg:
-                                                          'Berhasil dikeluarkan');
-                                                },
-                                                child: const Text(
-                                                  "Ya",
-                                                  style: TextStyle(
-                                                      color: Colors.red,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )),
-                                            TextButton(
-                                                onPressed: () {
-                                                  Get.back();
-                                                },
-                                                child: const Text(
-                                                  "Tidak",
-                                                  style: TextStyle(
-                                                    color: kPrimaryColor,
-                                                  ),
-                                                )),
-                                          ],
-                                        ));
-                                        return;
-                                      }
-
-                                      await controller.updateQty(
-                                          item, item.qty - 1);
-                                    },
-                                    icon: const Icon(
-                                      Icons.remove,
-                                      color: Colors.grey,
-                                      size: 16,
-                                    )),
-                                Text(item.qty.toString()),
-                                IconButton(
-                                    onPressed: () async {
-                                      if (item.qty < item.stock) {
-                                        await controller.updateQty(
-                                            item, item.qty + 1);
-                                      }
-                                    },
-                                    icon: const Icon(
-                                      Icons.add,
-                                      color: Colors.grey,
-                                      size: 16,
-                                    )),
-
-                                //TODO: Tambahkan pemilihan ukuran produk
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+                  return CartItemWidget(item: item, controller: controller,);
                 },
                 separatorBuilder: (context, index) {
                   return const SizedBox(
@@ -247,7 +153,7 @@ class _CartPageState extends State<CartPage> {
               width: 8,
             ),
             GetX<CartHelper>(builder: (controller) {
-              return Text(ServerConfig.convertPrice(controller.total.toInt()),
+              return Text("Rp. ${controller.total.toInt()}, -",
                   style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -256,6 +162,211 @@ class _CartPageState extends State<CartPage> {
           ],
         );
       }),
+    );
+  }
+}
+
+
+
+class RadioText extends StatefulWidget {
+  const RadioText({
+    
+
+
+    required this.radioGroup,
+    required this.value,
+    required this.onChanged,
+
+
+
+
+    super.key});
+
+
+  final ValueChanged<String> onChanged;
+  final String radioGroup;
+  final String value;
+
+
+
+  @override
+  State<RadioText> createState() => _RadioTextState();
+
+
+
+}
+
+class _RadioTextState extends State<RadioText> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Radio.adaptive(value: widget.value, groupValue: widget.radioGroup, onChanged: (b) => widget.onChanged(b!))
+      ],
+    );
+  }
+}
+
+
+
+
+
+// ignore: must_be_immutable
+class CartItemWidget extends StatefulWidget {
+  CartItemWidget({
+    super.key,
+    required this.item,
+    required this.controller,
+  }) {
+    ua = 'ukuran${item.productId}';
+  }
+
+  final CartHelper controller;
+  final CartItem item;
+  String ua = 'ukuran';
+
+  @override
+  State<CartItemWidget> createState() => _CartItemWidgetState();
+}
+
+class _CartItemWidgetState extends State<CartItemWidget> {
+
+
+
+
+
+  // load 
+
+
+
+
+
+
+  @override
+  void initState() {
+    
+
+    // load list detail from server identified by product id
+
+
+
+    // super constructor
+    super.initState();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: SizedBox(
+          width: 70,
+          child: UiNetImage(pathImage: widget.item.thumbnail)),
+      title: Text(widget.item.productName.toUpperCase()),
+      trailing: Text(
+        ServerConfig.convertPrice(widget.item.total.toInt()),
+        style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: kPrimaryColor),
+      ),
+      subtitle: DefaultTextStyle(
+        style: const TextStyle(fontSize: 12, color: Colors.grey),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            // 
+
+
+            // product price
+            Text(ServerConfig.convertPrice(widget.item.productPrice)),
+
+            Row(
+              children: widget.item.listUkuran.map((u) => RadioText(radioGroup: widget.ua, value: u, onChanged: (newUkuran) {
+                widget.item.ukuran= newUkuran;
+              })).toList(),
+            ),
+
+            const Divider(),
+            
+            
+            // add and sub item
+            Container(
+              decoration: const BoxDecoration(
+                  // border: Border.all(color: Colors.grey)
+                  ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                      onPressed: () async {
+                        if (widget.item.qty < 2) {
+                          Get.dialog(AlertDialog(
+                            title: const Text("Delete?"),
+                            content: const Text(
+                                "Buang produk ini dari keranjang?"),
+                            actions: [
+                              TextButton(
+                                  onPressed: () async {
+                                    final ch =
+                                        Get.find<CartHelper>();
+                                    await ch.deleteItem(widget.item);
+                                    Get.back();
+                                    Fluttertoast.showToast(
+                                        msg:
+                                            'Berhasil dikeluarkan');
+                                  },
+                                  child: const Text(
+                                    "Ya",
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontWeight:
+                                            FontWeight.bold),
+                                  )),
+                              TextButton(
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                  child: const Text(
+                                    "Tidak",
+                                    style: TextStyle(
+                                      color: kPrimaryColor,
+                                    ),
+                                  )),
+                            ],
+                          ));
+                          return;
+                        }
+    
+                        await widget.controller.updateQty(
+                            widget.item, widget.item.qty - 1);
+                      },
+                      icon: const Icon(
+                        Icons.remove,
+                        color: Colors.grey,
+                        size: 16,
+                      )),
+                  Text(widget.item.qty.toString()),
+                  IconButton(
+                      onPressed: () async {
+                        if (widget.item.qty < widget.item.stock) {
+                          await widget.controller.updateQty(
+                              widget.item, widget.item.qty + 1);
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.add,
+                        color: Colors.grey,
+                        size: 16,
+                      )),
+    
+                  //TODO: Tambahkan pemilihan ukuran produk
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

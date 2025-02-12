@@ -9,6 +9,7 @@ import 'package:myapp/helpers/api_http.dart';
 import 'package:myapp/helpers/cart.dart';
 import 'package:myapp/models/promo_code.dart';
 import 'package:myapp/screens/widgets/address_info.dart';
+import 'package:myapp/screens/widgets/checkout_item.dart';
 import 'package:myapp/screens/widgets/info_widget.dart';
 import 'package:myapp/screens/widgets/network_image.dart';
 import 'package:myapp/screens/widgets/photo_picker.dart';
@@ -57,6 +58,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     _authController = Get.find();
 
     totalAkhir = _cartHelper.total.toInt();
+
+    // promo controller
+    _promoController.addListener(() {
+      if(_promoController.text.isEmpty) {
+        _diskon = 0;
+        totalAkhir = _cartHelper.total.toInt();
+
+
+        // update UI
+        setState(() {
+          _statusKodePromo = StatusKodePromo.belumcek;
+        });
+      }
+    });
 
     super.initState();
   }
@@ -135,7 +150,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       List<Map<String, dynamic>> details = [];
 
       // iterasi cart item
-
       String detailProductJSONString = jsonEncode(details);
       formData.fields.add(MapEntry('detail', detailProductJSONString));
 
@@ -172,52 +186,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   content: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ..._cartHelper.items.map((item) => ListTile(
-                            leading: CircleAvatar(
-                              child: UiNetImage(pathImage: item.thumbnail),
-                            ),
-                            title: Text(
-                              item.productName.toUpperCase(),
-                              maxLines: 1,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Divider(),
-                                Text(
-                                  "Harga : Rp. ${item.productPrice.toInt()}, -",
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  "Jumlah yang dipesan : ${item.qty} pcs.",
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  "Total Harga : Rp. ${item.total.toInt()}, -.",
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )),
+                      ..._cartHelper.items.map((item) {
+                        return CheckoutItem(item: item,);
+                      }),
                       const Divider(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -533,7 +504,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                         onPressed: proccessCheckout,
                         icon: const Icon(Icons.send),
-                        label: Text(
+                        label: const Text(
                           "Proses",
                           style: TextStyle(
                             color: Colors.white,

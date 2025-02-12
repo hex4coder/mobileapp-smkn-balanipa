@@ -20,7 +20,7 @@ class _PhotoPickerState extends State<PhotoPicker> {
 
 
   File? file;
-  ImagePicker _picker = ImagePicker();
+  final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
