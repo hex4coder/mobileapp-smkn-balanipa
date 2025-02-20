@@ -25,6 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final AuthController authController = Get.find();
     authController.initialize();
 
+    // check user token
+    authController.checkUserToken();
+
     super.initState();
   }
 

@@ -32,7 +32,7 @@ class ServerConfig {
       return filename;
     }
 
-    String baseUriImage = "${ServerConfig.kEcommerceServerBaseURL}/storage/";
+    String baseUriImage = "${ServerConfig.kServerBaseAPI}/images/";
     return baseUriImage + filename;
   }
 

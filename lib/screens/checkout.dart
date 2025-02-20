@@ -11,7 +11,6 @@ import 'package:myapp/models/promo_code.dart';
 import 'package:myapp/screens/widgets/address_info.dart';
 import 'package:myapp/screens/widgets/checkout_item.dart';
 import 'package:myapp/screens/widgets/info_widget.dart';
-import 'package:myapp/screens/widgets/network_image.dart';
 import 'package:myapp/screens/widgets/photo_picker.dart';
 
 import 'package:dio/dio.dart' as d;
@@ -61,10 +60,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     // promo controller
     _promoController.addListener(() {
-      if(_promoController.text.isEmpty) {
+      if (_promoController.text.isEmpty) {
         _diskon = 0;
         totalAkhir = _cartHelper.total.toInt();
-
 
         // update UI
         setState(() {
@@ -157,6 +155,72 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }
   }
 
+  // cek kode promo
+  void checkPromoCode() async {
+    if (_mengecekPromo) {
+      return;
+    }
+
+    // cek kode promo
+    String kodePromo = _promoController.text;
+
+    // cek apakah user sudah input kode
+    if (kodePromo.isEmpty) {
+      Fluttertoast.showToast(msg: 'Masukkan dulu kode promo');
+
+      return;
+    }
+
+    // buat path untuk cek kode promo
+    String promoPath = "/check-promo/$kodePromo";
+
+    // lakukan pengiriman ke server
+    setState(() {
+      _mengecekPromo = true;
+    });
+
+    // kita cek respon dari sercer
+    final r = await _apiHttp.get(promoPath);
+
+    // check error
+    if (r.isError) {
+      _diskon = 0;
+
+      // show error
+      if (r.message == _authController.tokenError) {
+        await _authController.signout();
+        Get.back();
+        Fluttertoast.showToast(
+            msg: 'Sesi anda berakhir anda harus login ulang');
+      } else if (r.message.toLowerCase().contains('no record')) {
+        _diskon = 0;
+      }
+    } else {
+      final PromoCode promoCode = PromoCode.fromJson(r.data);
+      _diskon = promoCode.getDiscount(_cartHelper.total.toInt()).toInt();
+    }
+
+    // set total
+    setState(() {
+      totalAkhir = _cartHelper.total.toInt() - _diskon;
+    });
+
+    // jika diskon ada
+    if (_diskon > 0) {
+      setState(() {
+        _statusKodePromo = StatusKodePromo.ada;
+      });
+    } else {
+      setState(() {
+        _statusKodePromo = StatusKodePromo.tidakada;
+      });
+    }
+
+    setState(() {
+      _mengecekPromo = false;
+    });
+  }
+
   // render UI
   @override
   Widget build(BuildContext context) {
@@ -187,7 +251,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ..._cartHelper.items.map((item) {
-                        return CheckoutItem(item: item,);
+                        return CheckoutItem(
+                          item: item,
+                        );
                       }),
                       const Divider(),
                       Row(
@@ -257,78 +323,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 backgroundColor:
                                     const Color.fromARGB(255, 255, 191, 0),
                               ),
-                              onPressed: () async {
-                                if (_mengecekPromo) {
-                                  return;
-                                }
-
-                                // cek kode promo
-                                String kodePromo = _promoController.text;
-
-                                // cek apakah user sudah input kode
-                                if (kodePromo.isEmpty) {
-                                  Fluttertoast.showToast(
-                                      msg: 'Masukkan dulu kode promo');
-
-                                  return;
-                                }
-
-                                // buat path untuk cek kode promo
-                                String promoPath = "/check-promo/$kodePromo";
-
-                                // lakukan pengiriman ke server
-                                setState(() {
-                                  _mengecekPromo = true;
-                                });
-
-                                // kita cek respon dari sercer
-                                final r = await _apiHttp.get(promoPath);
-
-                                // check error
-                                if (r.isError) {
-                                  _diskon = 0;
-
-                                  // show error
-                                  if (r.message == _authController.tokenError) {
-                                    await _authController.signout();
-                                    Get.back();
-                                    Fluttertoast.showToast(
-                                        msg:
-                                            'Sesi anda berakhir anda harus login ulang');
-                                  } else if (r.message
-                                      .toLowerCase()
-                                      .contains('no record')) {
-                                    _diskon = 0;
-                                  }
-                                } else {
-                                  final PromoCode promoCode =
-                                      PromoCode.fromJson(r.data);
-                                  _diskon = promoCode
-                                      .getDiscount(_cartHelper.total.toInt())
-                                      .toInt();
-                                }
-
-                                // set total
-                                setState(() {
-                                  totalAkhir =
-                                      _cartHelper.total.toInt() - _diskon;
-                                });
-
-                                // jika diskon ada
-                                if (_diskon > 0) {
-                                  setState(() {
-                                    _statusKodePromo = StatusKodePromo.ada;
-                                  });
-                                } else {
-                                  setState(() {
-                                    _statusKodePromo = StatusKodePromo.tidakada;
-                                  });
-                                }
-
-                                setState(() {
-                                  _mengecekPromo = false;
-                                });
-                              },
+                              onPressed: checkPromoCode,
                               child: const Text("Cek Promo",
                                   style: TextStyle(
                                     color: kPrimaryColor,

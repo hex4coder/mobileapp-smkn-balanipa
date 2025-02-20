@@ -1,3 +1,4 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:myapp/helpers/api_http.dart';
 import 'package:myapp/helpers/api_token.dart';
@@ -188,6 +189,17 @@ class AuthController extends GetxController {
     return true;
   }
 
+  Future<void> checkUserToken() async {
+    _loading.value = true;
+    final res = await _api.get("/check-token");
+    _loading.value = false;
+
+    if (res.isError) {
+      // user not login
+      await signout();
+    }
+  }
+
   Future<void> signout() async {
     _loading.value = true;
 
@@ -202,6 +214,9 @@ class AuthController extends GetxController {
     _user.value = null;
 
     _loading.value = false;
+
+    // toast
+    Fluttertoast.showToast(msg: "Anda telah logout. Silahkan login kembali!");
   }
 
   // getter and setter
