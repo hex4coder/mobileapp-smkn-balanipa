@@ -5,7 +5,7 @@ import 'package:myapp/configs/colors.dart';
 // berisi utility untuk membuat helper snackbar
 class UiSnackbar {
   // untuk menampilkan pesan success
-  static void success(String title, String message) {
+  static Future<void> success(String title, String message) async {
     Get.snackbar(
       title,
       message,
@@ -16,6 +16,8 @@ class UiSnackbar {
         color: Colors.white,
       ),
     );
+
+    await Future.delayed(const Duration(seconds: 3));
   }
 
   // untuk menampilkan pesan kesalahan

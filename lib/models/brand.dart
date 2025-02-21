@@ -28,7 +28,7 @@ class Brand {
         name: json["name"],
         slug: json["slug"],
         logo: json["logo"],
-        deletedAt: json['deleted_at'] == "0001-01-01T00:00:00Z" ? null : DateTime.parse(json["deleted_at"]),
+        deletedAt: json['deleted_at'],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
       );

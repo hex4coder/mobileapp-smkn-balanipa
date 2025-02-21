@@ -7,6 +7,7 @@ import 'package:myapp/configs/colors.dart';
 import 'package:myapp/controllers/auth.dart';
 import 'package:myapp/helpers/api_http.dart';
 import 'package:myapp/helpers/cart.dart';
+import 'package:myapp/helpers/ui_snackbar.dart';
 import 'package:myapp/models/promo_code.dart';
 import 'package:myapp/screens/widgets/address_info.dart';
 import 'package:myapp/screens/widgets/checkout_item.dart';
@@ -27,7 +28,12 @@ enum StatusKodePromo {
 }
 
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({super.key});
+  const CheckoutScreen({
+    required this.pageController,
+    super.key,
+  });
+
+  final PageController pageController;
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -39,6 +45,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   late ApiHttp _apiHttp;
   late AuthController _authController;
   File? buktiPembayaran;
+
+  bool loading = false;
 
   TipePembayaran _tipePembayaran = TipePembayaran.manual;
   final TextEditingController _promoController = TextEditingController();
@@ -74,10 +82,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     super.initState();
   }
 
-  // TODO: Tambahkan tempat untuk keterangan dari produk jika ada
-
   // fungsi untuk kirim data ke server
   void proccessCheckout() async {
+    if (loading) return; // hanya bisa 1x kirim
+
     // validasi data
     if (buktiPembayaran == null) {
       Fluttertoast.showToast(msg: "Silahkan lampirkan bukti pembayaran anda!");
@@ -127,10 +135,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (konfirmasi == 'ya') {
       // buat form data
       d.FormData formData = d.FormData.fromMap({
-        'bukti_transfer': await d.MultipartFile.fromFile(buktiPembayaran!.path),
-        'total_harga_produk': _cartHelper.total,
-        'total_diskon': _diskon,
-        'total_bayar': totalAkhir,
+        'bukti_transfer': await d.MultipartFile.fromFile(buktiPembayaran!.path,
+            filename: buktiPembayaran!.path.split("/").last),
+        'total_harga_produk': _cartHelper.total.toInt().toString(),
+        'total_diskon': _diskon.toInt().toString(),
+        'total_bayar': totalAkhir.toInt().toString(),
       });
 
       // jika ada diskon maka, tambahkan kode promo
@@ -151,7 +160,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       // Menambahkan item dari cart kedalam field form data
       // iterasi cart item
       for (var cartItem in cart.items) {
-        details.add(cartItem.toJSON());
+        details.add(cartItem.toDetailJSON());
       }
 
       // konversi ke jsonstring sebelum penambahan ke array data
@@ -160,6 +169,36 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
       // proses data untuk dikirim ke server
       print(formData);
+      print(formData.fields);
+
+      setState(() {
+        loading = true;
+      });
+
+      // post data to server
+      final res = await _apiHttp.post('/order', formData,
+          postDataType: ContentTypeRequest.multipartFormData);
+
+      // finish
+      setState(() {
+        loading = false;
+      });
+
+      // error
+      if (res.isError) {
+        Fluttertoast.showToast(msg: "Terjadi kesalahan.");
+        UiSnackbar.error('Error', res.message);
+        return;
+      }
+
+      // success
+      await UiSnackbar.success("Berhasil", "Pesanan berhasil dibuat");
+      // 1. kosongkan cart
+      await _cartHelper.reset();
+      // 2. tutup halaman checkout
+      widget.pageController.animateToPage(4,
+          duration: const Duration(milliseconds: 230), curve: Curves.linear);
+      // 3. redirect ke halaman akun
     }
   }
 
@@ -498,25 +537,28 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                 // checkout button
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: kPrimaryColor,
-                          iconColor: Colors.white,
-                        ),
-                        onPressed: proccessCheckout,
-                        icon: const Icon(Icons.send),
-                        label: const Text(
-                          "Proses",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                    loading
+                        ? const CircularProgressIndicator.adaptive()
+                        : Expanded(
+                            child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: kPrimaryColor,
+                                iconColor: Colors.white,
+                              ),
+                              onPressed: proccessCheckout,
+                              icon: const Icon(Icons.send),
+                              label: const Text(
+                                "Proses",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ],

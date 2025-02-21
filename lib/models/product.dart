@@ -4,7 +4,6 @@ Product productFromJson(String str) => Product.fromJson(json.decode(str));
 
 String productToJson(Product data) => json.encode(data.toJson());
 
-
 class Product {
   int id;
   String nama;
@@ -52,7 +51,7 @@ class Product {
         thumbnail: json["thumbnail"],
         kategoriId: json["kategori_id"],
         brandId: json["brand_id"],
-        deletedAt: json['deleted_at'] == "0001-01-01T00:00:00Z" ? null : DateTime.parse(json["deleted_at"]),
+        deletedAt: json['deleted_at'],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
       );

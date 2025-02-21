@@ -59,6 +59,17 @@ class CartItem {
       'total': qty * productPrice
     };
   }
+
+  Map<String, dynamic> toDetailJSON() {
+    return {
+      'product_id': productId,
+      'harga': productPrice,
+      'jumlah': qty,
+      'total': qty * productPrice,
+      'ukuran': ukuran ?? '',
+      'keterangan': keterangan ?? '',
+    };
+  }
 }
 
 // class untuk menjalankan fungsi cart di mobile

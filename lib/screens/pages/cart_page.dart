@@ -114,7 +114,9 @@ class _CartPageState extends State<CartPage> {
                                       'Anda belum login, silahkan login terlebih dahulu.');
                             } else {
                               // buka checkout page
-                              Get.to(() => const CheckoutScreen());
+                              Get.to(() => CheckoutScreen(
+                                    pageController: widget.pageController,
+                                  ));
                             }
                           },
                           icon: const Icon(Icons.card_membership),
@@ -126,7 +128,10 @@ class _CartPageState extends State<CartPage> {
 
                   final item = controller.items[index];
 
-                  return CartItemWidget(item: item, controller: controller,);
+                  return CartItemWidget(
+                    item: item,
+                    controller: controller,
+                  );
                 },
                 separatorBuilder: (context, index) {
                   return const SizedBox(
@@ -166,34 +171,19 @@ class _CartPageState extends State<CartPage> {
   }
 }
 
-
-
 class RadioText extends StatefulWidget {
-  const RadioText({
-    
-
-
-    required this.radioGroup,
-    required this.value,
-    required this.onChanged,
-
-
-
-
-    super.key});
-
+  const RadioText(
+      {required this.radioGroup,
+      required this.value,
+      required this.onChanged,
+      super.key});
 
   final ValueChanged<String> onChanged;
   final String radioGroup;
   final String value;
 
-
-
   @override
   State<RadioText> createState() => _RadioTextState();
-
-
-
 }
 
 class _RadioTextState extends State<RadioText> {
@@ -201,15 +191,14 @@ class _RadioTextState extends State<RadioText> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Radio.adaptive(value: widget.value, groupValue: widget.radioGroup, onChanged: (b) => widget.onChanged(b!))
+        Radio.adaptive(
+            value: widget.value,
+            groupValue: widget.radioGroup,
+            onChanged: (b) => widget.onChanged(b!))
       ],
     );
   }
 }
-
-
-
-
 
 // ignore: must_be_immutable
 class CartItemWidget extends StatefulWidget {
@@ -230,66 +219,50 @@ class CartItemWidget extends StatefulWidget {
 }
 
 class _CartItemWidgetState extends State<CartItemWidget> {
-
-
-
-
-
-  // load 
-
-
-
-
-
+  // load
 
   @override
   void initState() {
-    
-
     // load list detail from server identified by product id
-
-
 
     // super constructor
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: SizedBox(
-          width: 70,
-          child: UiNetImage(pathImage: widget.item.thumbnail)),
+          width: 70, child: UiNetImage(pathImage: widget.item.thumbnail)),
       title: Text(widget.item.productName.toUpperCase()),
       trailing: Text(
         ServerConfig.convertPrice(widget.item.total.toInt()),
         style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: kPrimaryColor),
+            fontSize: 16, fontWeight: FontWeight.bold, color: kPrimaryColor),
       ),
       subtitle: DefaultTextStyle(
         style: const TextStyle(fontSize: 12, color: Colors.grey),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            // 
-
+            //
 
             // product price
             Text(ServerConfig.convertPrice(widget.item.productPrice)),
 
             Row(
-              children: widget.item.listUkuran.map((u) => RadioText(radioGroup: widget.ua, value: u, onChanged: (newUkuran) {
-                widget.item.ukuran= newUkuran;
-              })).toList(),
+              children: widget.item.listUkuran
+                  .map((u) => RadioText(
+                      radioGroup: widget.ua,
+                      value: u,
+                      onChanged: (newUkuran) {
+                        widget.item.ukuran = newUkuran;
+                      }))
+                  .toList(),
             ),
 
             const Divider(),
-            
-            
+
             // add and sub item
             Container(
               decoration: const BoxDecoration(
@@ -303,25 +276,22 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                         if (widget.item.qty < 2) {
                           Get.dialog(AlertDialog(
                             title: const Text("Delete?"),
-                            content: const Text(
-                                "Buang produk ini dari keranjang?"),
+                            content:
+                                const Text("Buang produk ini dari keranjang?"),
                             actions: [
                               TextButton(
                                   onPressed: () async {
-                                    final ch =
-                                        Get.find<CartHelper>();
+                                    final ch = Get.find<CartHelper>();
                                     await ch.deleteItem(widget.item);
                                     Get.back();
                                     Fluttertoast.showToast(
-                                        msg:
-                                            'Berhasil dikeluarkan');
+                                        msg: 'Berhasil dikeluarkan');
                                   },
                                   child: const Text(
                                     "Ya",
                                     style: TextStyle(
                                         color: Colors.red,
-                                        fontWeight:
-                                            FontWeight.bold),
+                                        fontWeight: FontWeight.bold),
                                   )),
                               TextButton(
                                   onPressed: () {
@@ -337,9 +307,9 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                           ));
                           return;
                         }
-    
-                        await widget.controller.updateQty(
-                            widget.item, widget.item.qty - 1);
+
+                        await widget.controller
+                            .updateQty(widget.item, widget.item.qty - 1);
                       },
                       icon: const Icon(
                         Icons.remove,
@@ -350,8 +320,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                   IconButton(
                       onPressed: () async {
                         if (widget.item.qty < widget.item.stock) {
-                          await widget.controller.updateQty(
-                              widget.item, widget.item.qty + 1);
+                          await widget.controller
+                              .updateQty(widget.item, widget.item.qty + 1);
                         }
                       },
                       icon: const Icon(
@@ -359,7 +329,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                         color: Colors.grey,
                         size: 16,
                       )),
-    
+
                   //TODO: Tambahkan pemilihan ukuran produk
                 ],
               ),

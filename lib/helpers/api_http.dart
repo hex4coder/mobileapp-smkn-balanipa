@@ -6,6 +6,12 @@ import 'package:myapp/helpers/interceptors/response_interceptor.dart';
 import 'package:myapp/helpers/interceptors/token_interceptor.dart';
 import 'package:myapp/helpers/models/api_response_model.dart';
 
+// enum content type for http request
+enum ContentTypeRequest {
+  json,
+  multipartFormData,
+}
+
 // helper untuk mengelola api
 // menggunakan dio untuk komunikasi
 // ke server
@@ -77,12 +83,26 @@ class ApiHttp {
       } else {
         return ApiResponse.fromMap(e.response!.data);
       }
+    } catch (e) {
+      print("DIO GET ERROR");
+      print(e);
+      return ApiResponse.error(e.toString());
     }
   }
 
   // Post request dengan api response
-  Future<ApiResponse> post(String path, Map<String, dynamic> data) async {
+  Future<ApiResponse> post(String path, Object? data,
+      {ContentTypeRequest postDataType = ContentTypeRequest.json}) async {
     try {
+      // update header for request based on post data type
+      switch (postDataType) {
+        case ContentTypeRequest.multipartFormData:
+          _dio.options.headers["Content-Type"] = "multipart/form-data";
+          break;
+        default:
+          _dio.options.headers['Content-Type'] = "application/json";
+      }
+
       final r = await _dio.post(path, data: data);
       return r.data as ApiResponse;
     } on DioException catch (e) {

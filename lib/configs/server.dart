@@ -2,10 +2,8 @@
 
 class ServerConfig {
   // base url
-  static String kServerBaseAPI = "https://ecom-api.smknbalanipa.sch.id";
-  // static String kServerBaseAPI = "http://10.0.2.2:3000";
-  static String kEcommerceServerBaseURL =
-      "https://ecommerce.smknbalanipa.sch.id";
+  // static String kServerBaseAPI = "https://ecom-api.smknbalanipa.sch.id";
+  static String kServerBaseAPI = "http://10.0.2.2:3001";
 
   // default network image for no image
   static String kNoImage =
@@ -30,6 +28,10 @@ class ServerConfig {
   static String getImageUrl(String filename, {bool externalUrl = false}) {
     if (externalUrl) {
       return filename;
+    }
+
+    if (filename.contains("/")) {
+      filename = filename.replaceAll("/", "");
     }
 
     String baseUriImage = "${ServerConfig.kServerBaseAPI}/images/";
