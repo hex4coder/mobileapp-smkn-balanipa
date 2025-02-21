@@ -23,10 +23,10 @@ class _HomeScreenState extends State<HomeScreen> {
     _pageController = PageController(initialPage: _currentPageIndex);
 // load current user if exists
     final AuthController authController = Get.find();
-    authController.initialize();
-
-    // check user token
-    authController.checkUserToken();
+    authController.initialize().then((_) {
+      // check user token
+      authController.checkUserToken();
+    });
 
     super.initState();
   }

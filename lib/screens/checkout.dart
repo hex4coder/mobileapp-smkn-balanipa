@@ -143,15 +143,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       formData.fields.add(MapEntry('user_id', userId.toString()));
 
       // proses detail pesanan berdasarkan data pada cart
-      //TODO: Menambahkan item dari cart kedalam field form data
-      //TODO: konversi ke jsonstring sebelum penambahan ke array data
       List<Map<String, dynamic>> details = [];
 
+      // read the cart items
+      final CartHelper cart = Get.find();
+
+      // Menambahkan item dari cart kedalam field form data
       // iterasi cart item
+      for (var cartItem in cart.items) {
+        details.add(cartItem.toJSON());
+      }
+
+      // konversi ke jsonstring sebelum penambahan ke array data
       String detailProductJSONString = jsonEncode(details);
       formData.fields.add(MapEntry('detail', detailProductJSONString));
 
       // proses data untuk dikirim ke server
+      print(formData);
     }
   }
 

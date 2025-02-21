@@ -115,7 +115,7 @@ class CartHelper extends GetxController {
 
     // create new item
     final item = CartItem(
-      listUkuran: [],
+        listUkuran: [],
         stock: product.stok,
         thumbnail: product.thumbnail,
         productId: product.id,
@@ -125,6 +125,31 @@ class CartHelper extends GetxController {
         total: (product.harga * defaultQty).toDouble());
 
     await addNewItem(item, stock: product.stok);
+  }
+
+  void updateKeterangan(CartItem item, String newKeterangan) async {
+    // update list cart items
+    bool found = false;
+    int index = -1;
+    int iterator = 0;
+    for (var i in items) {
+      if (i.productId == item.productId) {
+        index = iterator;
+        found = true;
+        break;
+      }
+      iterator = iterator + 1;
+    }
+
+    if (!found) {
+      // not found
+      return; // stop
+    }
+
+    // found
+    items[index].keterangan = newKeterangan;
+    // update items
+    await saveCurrentItems();
   }
 
   // add new items to cart
