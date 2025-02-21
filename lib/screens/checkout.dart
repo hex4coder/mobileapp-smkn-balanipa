@@ -180,9 +180,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           postDataType: ContentTypeRequest.multipartFormData);
 
       // finish
-      setState(() {
-        loading = false;
-      });
 
       // error
       if (res.isError) {
@@ -199,6 +196,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       widget.pageController.animateToPage(4,
           duration: const Duration(milliseconds: 230), curve: Curves.linear);
       // 3. redirect ke halaman akun
+
+      setState(() {
+        loading = false;
+      });
     }
   }
 
