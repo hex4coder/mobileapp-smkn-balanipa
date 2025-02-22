@@ -53,6 +53,16 @@ class _CheckoutItemState extends State<CheckoutItem> {
         children: [
           const Divider(),
           Text(
+            "Ukuran : ${widget.item.ukuran}",
+            style: const TextStyle(
+              fontSize: 10,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Text(
             "Harga : Rp. ${widget.item.productPrice.toInt()}, -",
             style: const TextStyle(
               fontSize: 10,

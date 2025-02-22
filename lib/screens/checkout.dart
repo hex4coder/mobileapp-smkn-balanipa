@@ -168,8 +168,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       formData.fields.add(MapEntry('detail', detailProductJSONString));
 
       // proses data untuk dikirim ke server
-      print(formData);
-      print(formData.fields);
 
       setState(() {
         loading = true;

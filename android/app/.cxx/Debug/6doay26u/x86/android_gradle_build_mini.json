@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/home/hex4coder/development/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/hex4coder/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/hex4coder/projects/mobileapp-smkn-balanipa/android/app/.cxx/Debug/6doay26u/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/hex4coder/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/hex4coder/projects/mobileapp-smkn-balanipa/android/app/.cxx/Debug/6doay26u/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

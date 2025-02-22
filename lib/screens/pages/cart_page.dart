@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:myapp/configs/colors.dart';
-import 'package:myapp/configs/server.dart';
 import 'package:myapp/controllers/auth.dart';
+
 import 'package:myapp/helpers/cart.dart';
 import 'package:myapp/helpers/ui_snackbar.dart';
 import 'package:myapp/screens/checkout.dart';
+import 'package:myapp/screens/widgets/cart_item.dart';
 import 'package:myapp/screens/widgets/empty_widget.dart';
-import 'package:myapp/screens/widgets/network_image.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({required this.pageController, super.key});
@@ -22,10 +22,11 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  final ch = Get.find<CartHelper>();
+
   @override
   void initState() {
     Timer(const Duration(milliseconds: 100), () {
-      final ch = Get.find<CartHelper>();
       ch.loadItems().then((_) {
         // UiSnackbar.success('items', 'items loaded : ${ch.items.length}');
       });
@@ -103,7 +104,7 @@ class _CartPageState extends State<CartPage> {
                             foregroundColor: Colors.white,
                             iconColor: Colors.white,
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             final AuthController authController = Get.find();
                             if (authController.isLoggedIn == false) {
                               widget.pageController.animateToPage(3,
@@ -113,6 +114,15 @@ class _CartPageState extends State<CartPage> {
                                   msg:
                                       'Anda belum login, silahkan login terlebih dahulu.');
                             } else {
+                              // check all items
+                              if (!ch.isValidForCheckout()) {
+                                Fluttertoast.showToast(
+                                    msg:
+                                        'Pastikan anda telah memilih ukuran dengan benar!');
+
+                                return;
+                              }
+
                               // buka checkout page
                               Get.to(() => CheckoutScreen(
                                     pageController: widget.pageController,
@@ -167,176 +177,6 @@ class _CartPageState extends State<CartPage> {
           ],
         );
       }),
-    );
-  }
-}
-
-class RadioText extends StatefulWidget {
-  const RadioText(
-      {required this.radioGroup,
-      required this.value,
-      required this.onChanged,
-      super.key});
-
-  final ValueChanged<String> onChanged;
-  final String radioGroup;
-  final String value;
-
-  @override
-  State<RadioText> createState() => _RadioTextState();
-}
-
-class _RadioTextState extends State<RadioText> {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Radio.adaptive(
-            value: widget.value,
-            groupValue: widget.radioGroup,
-            onChanged: (b) => widget.onChanged(b!))
-      ],
-    );
-  }
-}
-
-// ignore: must_be_immutable
-class CartItemWidget extends StatefulWidget {
-  CartItemWidget({
-    super.key,
-    required this.item,
-    required this.controller,
-  }) {
-    ua = 'ukuran${item.productId}';
-  }
-
-  final CartHelper controller;
-  final CartItem item;
-  String ua = 'ukuran';
-
-  @override
-  State<CartItemWidget> createState() => _CartItemWidgetState();
-}
-
-class _CartItemWidgetState extends State<CartItemWidget> {
-  // load
-
-  @override
-  void initState() {
-    // load list detail from server identified by product id
-
-    // super constructor
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: SizedBox(
-          width: 70, child: UiNetImage(pathImage: widget.item.thumbnail)),
-      title: Text(widget.item.productName.toUpperCase()),
-      trailing: Text(
-        ServerConfig.convertPrice(widget.item.total.toInt()),
-        style: const TextStyle(
-            fontSize: 16, fontWeight: FontWeight.bold, color: kPrimaryColor),
-      ),
-      subtitle: DefaultTextStyle(
-        style: const TextStyle(fontSize: 12, color: Colors.grey),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            //
-
-            // product price
-            Text(ServerConfig.convertPrice(widget.item.productPrice)),
-
-            Row(
-              children: widget.item.listUkuran
-                  .map((u) => RadioText(
-                      radioGroup: widget.ua,
-                      value: u,
-                      onChanged: (newUkuran) {
-                        widget.item.ukuran = newUkuran;
-                      }))
-                  .toList(),
-            ),
-
-            const Divider(),
-
-            // add and sub item
-            Container(
-              decoration: const BoxDecoration(
-                  // border: Border.all(color: Colors.grey)
-                  ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                      onPressed: () async {
-                        if (widget.item.qty < 2) {
-                          Get.dialog(AlertDialog(
-                            title: const Text("Delete?"),
-                            content:
-                                const Text("Buang produk ini dari keranjang?"),
-                            actions: [
-                              TextButton(
-                                  onPressed: () async {
-                                    final ch = Get.find<CartHelper>();
-                                    await ch.deleteItem(widget.item);
-                                    Get.back();
-                                    Fluttertoast.showToast(
-                                        msg: 'Berhasil dikeluarkan');
-                                  },
-                                  child: const Text(
-                                    "Ya",
-                                    style: TextStyle(
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.bold),
-                                  )),
-                              TextButton(
-                                  onPressed: () {
-                                    Get.back();
-                                  },
-                                  child: const Text(
-                                    "Tidak",
-                                    style: TextStyle(
-                                      color: kPrimaryColor,
-                                    ),
-                                  )),
-                            ],
-                          ));
-                          return;
-                        }
-
-                        await widget.controller
-                            .updateQty(widget.item, widget.item.qty - 1);
-                      },
-                      icon: const Icon(
-                        Icons.remove,
-                        color: Colors.grey,
-                        size: 16,
-                      )),
-                  Text(widget.item.qty.toString()),
-                  IconButton(
-                      onPressed: () async {
-                        if (widget.item.qty < widget.item.stock) {
-                          await widget.controller
-                              .updateQty(widget.item, widget.item.qty + 1);
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.add,
-                        color: Colors.grey,
-                        size: 16,
-                      )),
-
-                  //TODO: Tambahkan pemilihan ukuran produk
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

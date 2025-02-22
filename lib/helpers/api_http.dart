@@ -84,8 +84,6 @@ class ApiHttp {
         return ApiResponse.fromMap(e.response!.data);
       }
     } catch (e) {
-      print("DIO GET ERROR");
-      print(e);
       return ApiResponse.error(e.toString());
     }
   }

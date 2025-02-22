@@ -1,6 +1,7 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:myapp/controllers/product.dart';
 import 'package:myapp/models/product.dart';
 
 class CartItem {
@@ -16,7 +17,7 @@ class CartItem {
 
   String? keterangan;
   String? ukuran;
-  List<String> listUkuran;
+  List<dynamic> listUkuran;
 
   // constructor
   CartItem({
@@ -48,6 +49,7 @@ class CartItem {
 
   Map<String, dynamic> toJSON() {
     return {
+      'list_ukuran': listUkuran,
       'keterangan': keterangan ?? '',
       'ukuran': ukuran ?? '',
       'stock': stock,
@@ -83,8 +85,14 @@ class CartHelper extends GetxController {
   // list data yang akan disimpan ke storage
   final RxList<CartItem> _items = RxList.empty();
 
+  // product controller
+  late ProductController productController;
+
   @override
   void onInit() {
+    // controller for products
+    productController = Get.find();
+
     // inisialisasi box storage
     _box = GetStorage('cart-helper');
     // load cart items from localstorage
@@ -124,9 +132,26 @@ class CartHelper extends GetxController {
   Future<void> addNewItemFromProduct(Product product) async {
     const defaultQty = 1;
 
+    // get product details
+    // get product id
+    int productId = product.id;
+
+    // read detail
+    final req = await productController.fetchDetailProduct(productId);
+
+    // list
+    List<String> listUkuran = [];
+
+    // check
+    if (req != null) {
+      if (req.listUkuran.isNotEmpty) {
+        listUkuran = req.listUkuran.map((u) => u.ukuran).toList();
+      }
+    }
+
     // create new item
-    final item = CartItem(
-        listUkuran: [],
+    CartItem item = CartItem(
+        listUkuran: listUkuran,
         stock: product.stok,
         thumbnail: product.thumbnail,
         productId: product.id,
@@ -136,6 +161,20 @@ class CartHelper extends GetxController {
         total: (product.harga * defaultQty).toDouble());
 
     await addNewItem(item, stock: product.stok);
+  }
+
+  // check all ukuran product
+  bool isValidForCheckout() {
+    // iterate through items
+    bool isvalid = true;
+
+    for (var item in _items) {
+      if (item.ukuran == null || (item.ukuran?.length ?? 0) < 1) {
+        isvalid = false;
+      }
+    }
+
+    return isvalid;
   }
 
   void updateKeterangan(CartItem item, String newKeterangan) async {
@@ -159,6 +198,31 @@ class CartHelper extends GetxController {
 
     // found
     items[index].keterangan = newKeterangan;
+    // update items
+    await saveCurrentItems();
+  }
+
+  void updateUkuran(CartItem item, String newUkuran) async {
+    // update list cart items
+    bool found = false;
+    int index = -1;
+    int iterator = 0;
+    for (var i in items) {
+      if (i.productId == item.productId) {
+        index = iterator;
+        found = true;
+        break;
+      }
+      iterator = iterator + 1;
+    }
+
+    if (!found) {
+      // not found
+      return; // stop
+    }
+
+    // found
+    items[index].ukuran = newUkuran;
     // update items
     await saveCurrentItems();
   }

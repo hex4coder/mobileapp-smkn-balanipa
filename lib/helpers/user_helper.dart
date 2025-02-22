@@ -43,7 +43,6 @@ class UserHelper {
     }
 
     final user = User.fromMap(userMap, withoutAddress: false);
-    print(user);
     return user;
   }
 }
