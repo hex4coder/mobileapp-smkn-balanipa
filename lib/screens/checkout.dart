@@ -5,10 +5,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:myapp/configs/colors.dart';
 import 'package:myapp/controllers/auth.dart';
-import 'package:myapp/helpers/api_http.dart';
+import 'package:myapp/controllers/order.dart';
+import 'package:myapp/controllers/promocode.dart';
 import 'package:myapp/helpers/cart.dart';
 import 'package:myapp/helpers/ui_snackbar.dart';
-import 'package:myapp/models/promo_code.dart';
 import 'package:myapp/screens/widgets/address_info.dart';
 import 'package:myapp/screens/widgets/checkout_item.dart';
 import 'package:myapp/screens/widgets/info_widget.dart';
@@ -42,7 +42,8 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   late AuthController authController;
   late CartHelper _cartHelper;
-  late ApiHttp _apiHttp;
+  late OrderController _orderApi;
+  late PromoCodeController _promoCodeController;
   late AuthController _authController;
   File? buktiPembayaran;
 
@@ -61,8 +62,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     // inisialisasi
     authController = Get.find();
     _cartHelper = Get.find();
-    _apiHttp = Get.find();
+    _orderApi = Get.find();
     _authController = Get.find();
+    _promoCodeController = Get.find();
 
     totalAkhir = _cartHelper.total.toInt();
 
@@ -173,31 +175,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         loading = true;
       });
 
-      // post data to server
-      final res = await _apiHttp.post('/order', formData,
-          postDataType: ContentTypeRequest.multipartFormData);
+      // create new order
+      try {
+        bool orderSuccess = await _orderApi.createNewOrder(formData);
 
-      // finish
-
-      // error
-      if (res.isError) {
-        Fluttertoast.showToast(msg: "Terjadi kesalahan.");
-        UiSnackbar.error('Error', res.message);
-        return;
+        if (orderSuccess) {
+          // success
+          await UiSnackbar.success("Berhasil", "Pesanan berhasil dibuat");
+          // 1. kosongkan cart
+          await _cartHelper.reset();
+          // 2. tutup halaman checkout
+          widget.pageController.animateToPage(4,
+              duration: const Duration(milliseconds: 230),
+              curve: Curves.linear);
+          // 3. redirect ke halaman akun
+        }
+      } finally {
+        setState(() {
+          loading = false;
+        });
       }
-
-      // success
-      await UiSnackbar.success("Berhasil", "Pesanan berhasil dibuat");
-      // 1. kosongkan cart
-      await _cartHelper.reset();
-      // 2. tutup halaman checkout
-      widget.pageController.animateToPage(4,
-          duration: const Duration(milliseconds: 230), curve: Curves.linear);
-      // 3. redirect ke halaman akun
-
-      setState(() {
-        loading = false;
-      });
     }
   }
 
@@ -217,32 +214,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       return;
     }
 
-    // buat path untuk cek kode promo
-    String promoPath = "/check-promo/$kodePromo";
-
     // lakukan pengiriman ke server
     setState(() {
       _mengecekPromo = true;
     });
 
     // kita cek respon dari sercer
-    final r = await _apiHttp.get(promoPath);
+    final promoCode = await _promoCodeController.checkPromo(kodePromo);
 
     // check error
-    if (r.isError) {
+    if (promoCode == null) {
       _diskon = 0;
-
-      // show error
-      if (r.message == _authController.tokenError) {
-        await _authController.signout();
-        Get.back();
-        Fluttertoast.showToast(
-            msg: 'Sesi anda berakhir anda harus login ulang');
-      } else if (r.message.toLowerCase().contains('no record')) {
-        _diskon = 0;
-      }
     } else {
-      final PromoCode promoCode = PromoCode.fromJson(r.data);
       _diskon = promoCode.getDiscount(_cartHelper.total.toInt()).toInt();
     }
 

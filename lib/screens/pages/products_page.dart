@@ -23,7 +23,7 @@ class _ProductsPageState extends State<ProductsPage> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 1), () async {
+    Timer(const Duration(milliseconds: 1), () async {
       if (mounted) {
         gc.fetchAll().then((_) {});
       }

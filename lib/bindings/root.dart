@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:myapp/controllers/auth.dart';
+import 'package:myapp/controllers/order.dart';
 import 'package:myapp/controllers/product.dart';
+import 'package:myapp/controllers/promocode.dart';
 import 'package:myapp/helpers/api_http.dart';
 import 'package:myapp/helpers/api_token.dart';
 import 'package:myapp/helpers/cart.dart';
@@ -27,5 +29,11 @@ class RootBinding implements Bindings {
 
     // inject cart helper
     Get.put<CartHelper>(CartHelper(), permanent: true);
+
+    // promo controller
+    Get.put<PromoCodeController>(PromoCodeController());
+
+    // inject order api
+    Get.put<OrderController>(OrderController());
   }
 }
