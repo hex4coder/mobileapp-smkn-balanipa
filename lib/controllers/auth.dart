@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:myapp/helpers/api_http.dart';
@@ -162,6 +163,9 @@ class AuthController extends GetxController {
     final userAddress = Address.fromMap(userAddressReq.data);
     user.address = userAddress;
 
+    // set user password to current password
+    user.password = req.password;
+
     // simpan user ke local storage
     await _userHelper.save(user);
 
@@ -190,16 +194,46 @@ class AuthController extends GetxController {
   }
 
   Future<void> checkUserToken() async {
+    if (!_userHelper.hasUser()) return; // belum login
+
+    // jika sudah login, lakukan pengecekan token
+    // dan jika token sudah expired maka, perbarui token
+
     _loading.value = true;
     final res = await _api.get("/check-token");
     _loading.value = false;
 
     if (res.isError) {
-      // user not login
-      await signout();
+      // token expired renrw token
+      await renewToken();
     }
   }
 
+  // renew token
+  Future<void> renewToken() async {
+    // get email and password from current user data
+    final User user = _user.value!;
+    String email = user.email;
+    String password = user.password; // this is not the hashed password
+
+    // create new login request
+    final LoginUserRequest loginReq =
+        LoginUserRequest(email: email, password: password);
+
+    // login to system
+    bool success = await login(loginReq);
+
+    // check
+    if (!success) {
+      UiSnackbar.error("Failed renew token", "Token gagal diperbaharui.");
+    } else {
+      if (kDebugMode) {
+        UiSnackbar.success("Token renewed", "Token anda diperbaharui");
+      }
+    }
+  }
+
+  // sign out user
   Future<void> signout() async {
     _loading.value = true;
 
