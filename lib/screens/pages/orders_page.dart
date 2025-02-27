@@ -25,12 +25,10 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
     super.didChangeDependencies();
   }
 
-
-void readOrders() async {
-  await _orderApi.getMyOrders();
-     setState(() {});
+  void readOrders() async {
+    await _orderApi.getMyOrders();
+    setState(() {});
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -118,35 +116,29 @@ void readOrders() async {
 
         // order list
         SliverList.builder(
-        
           itemBuilder: (_, index) {
-            final orders  = _orderApi.listOrders; 
+            final orders = _orderApi.listOrders;
 
             // no data
-            if(orders.isEmpty){
- return  const Center(
-              child: SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator.adaptive()),
-            );
-              } 
-             
+            if (orders.isEmpty) {
+              return const Center(
+                child: SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator.adaptive()),
+              );
+            }
 
-
-
-             // get current orders
+            // get current orders
             final order = orders[index];
 
             // parsing data with orders list
             // TODO: Lengkapi UI untuk item order
-            return ListTile( 
+            return ListTile(
               title: Text("Order ID : ${order.id}"),
               subtitle: Column(
-                
-  crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   Text(order.status),
                   Text(order.totalBayar.toString()),
                   Text(order.tanggal.toIso8601String()),
@@ -154,7 +146,8 @@ void readOrders() async {
               ),
             );
           },
-          itemCount: _orderApi.listOrders.isEmpty ? 1 : _orderApi.listOrders.length,
+          itemCount:
+              _orderApi.listOrders.isEmpty ? 1 : _orderApi.listOrders.length,
         )
       ],
     );
