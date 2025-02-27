@@ -3,11 +3,15 @@ import 'package:get/get.dart';
 import 'package:myapp/helpers/api_http.dart';
 import 'package:myapp/helpers/ui_snackbar.dart';
 import 'package:dio/dio.dart' as d;
+import 'package:myapp/models/order.dart';
 
 class OrderController extends GetxController {
   // order controller
 
   late ApiHttp api;
+  final RxList<Order> _orders = RxList.empty();
+
+  List<Order> get listOrders => _orders;
 
   @override
   void onInit() {
@@ -25,6 +29,18 @@ class OrderController extends GetxController {
       UiSnackbar.error("Fetch Order Failed", res.message);
       return;
     }
+
+    // create orders list
+    List<Order> orders = [];
+
+    // mapping data to orders
+    final ordersdata = res.data as List<dynamic>;
+    for (var order in ordersdata) {
+      orders.add(Order.fromJson(order));
+    }
+
+    // update new data
+    _orders.assignAll(orders);
   }
 
   // create new order
@@ -32,8 +48,6 @@ class OrderController extends GetxController {
     // post data to server
     final res = await api.post('/order', data,
         postDataType: ContentTypeRequest.multipartFormData);
-
-    // finish
 
     // error
     if (res.isError) {

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:myapp/configs/server.dart';
+import 'package:myapp/controllers/auth.dart';
 import 'package:myapp/helpers/api_token.dart';
 import 'package:myapp/helpers/interceptors/response_interceptor.dart';
 import 'package:myapp/helpers/interceptors/token_interceptor.dart';
@@ -73,6 +74,11 @@ class ApiHttp {
       final res = r.data as ApiResponse;
 
       if (res.message == errTokenExpired) {
+        // renew token
+
+        final AuthController auth = Get.find();
+        await auth.renewToken();
+
         return ApiResponse.error(errTokenExpired);
       } else {
         return res;

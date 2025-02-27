@@ -181,7 +181,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
         if (orderSuccess) {
           // success
-          await UiSnackbar.success("Berhasil", "Pesanan berhasil dibuat");
+          Get.back(); // close this screen
+          UiSnackbar.success("Berhasil", "Pesanan berhasil dibuat");
           // 1. kosongkan cart
           await _cartHelper.reset();
           // 2. tutup halaman checkout
