@@ -1,4 +1,5 @@
 // server configurations
+import 'package:flutter/material.dart';
 
 class ServerConfig {
   // base url
@@ -43,5 +44,19 @@ class ServerConfig {
     String toString = fromString.substring(0, 1).toUpperCase() +
         fromString.substring(1).toLowerCase();
     return toString;
+  }
+
+  static Color getColorByStatus(String lowerStatus, {bool foreground = false}) {
+    Color color = Colors.amber;
+
+    if (lowerStatus == "dibatalkan") color = Colors.red;
+    if (lowerStatus == "sedang diproses") color = Colors.blue;
+    if (lowerStatus == "dibatalkan") color = Colors.red;
+    if (lowerStatus == "sudah dikirim") color = Colors.indigo;
+    if (lowerStatus == "selesai") color = Colors.green;
+
+    if (!foreground) color = color.withOpacity(.12);
+
+    return color;
   }
 }

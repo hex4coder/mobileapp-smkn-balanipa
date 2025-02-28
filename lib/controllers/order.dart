@@ -5,7 +5,6 @@ import 'package:myapp/helpers/ui_snackbar.dart';
 import 'package:dio/dio.dart' as d;
 import 'package:myapp/models/order.dart';
 import 'package:myapp/models/order_detail.dart';
-import 'package:myapp/screens/product/detail.dart';
 
 // cancel order class
 class CancelOrderRequest {
@@ -138,6 +137,8 @@ class OrderController extends GetxController {
         details.add(OrderDetail.fromJson(d));
       }
     }
+
+    details.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     // not error
     return details;

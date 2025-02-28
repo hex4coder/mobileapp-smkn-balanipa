@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:myapp/controllers/auth.dart';
 import 'package:myapp/controllers/order.dart';
+import 'package:myapp/screens/order/detail.dart';
 import 'package:myapp/screens/pages/account_page.dart';
 import 'package:myapp/screens/widgets/order_item.dart';
 import 'package:myapp/screens/widgets/order_status.dart';
