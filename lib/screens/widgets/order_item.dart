@@ -174,17 +174,21 @@ class _OrderItemState extends State<OrderItem> {
                               const Spacer(),
                               Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.green[100],
+                                  color: getColorByStatus(
+                                      widget.order.status.toLowerCase(),
+                                      foreground: false),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 padding: const EdgeInsets.all(8),
                                 child: Text(
                                   widget.order.status.toUpperCase(),
                                   style: TextStyle(
-                                    fontSize: 8,
+                                    fontSize: 9,
                                     letterSpacing: 3,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.green[900],
+                                    fontWeight: FontWeight.w900,
+                                    color: getColorByStatus(
+                                        widget.order.status.toLowerCase(),
+                                        foreground: true),
                                   ),
                                 ),
                               )
@@ -220,5 +224,19 @@ class _OrderItemState extends State<OrderItem> {
               ),
       ),
     );
+  }
+
+  Color getColorByStatus(String lowerStatus, {bool foreground = false}) {
+    Color color = Colors.amber;
+
+    if (lowerStatus == "dibatalkan") color = Colors.red;
+    if (lowerStatus == "sedang diproses") color = Colors.blue;
+    if (lowerStatus == "dibatalkan") color = Colors.red;
+    if (lowerStatus == "sudah dikirim") color = Colors.indigo;
+    if (lowerStatus == "selesai") color = Colors.green;
+
+    if (!foreground) color = color.withOpacity(.12);
+
+    return color;
   }
 }
