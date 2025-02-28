@@ -150,11 +150,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           letterSpacing: 1.2),
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
                 ],
               ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: Center(
+              child: Text("Produk yang Dibeli"),
             ),
           ),
           SliverList.builder(

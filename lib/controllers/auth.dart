@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -96,6 +98,8 @@ class AuthController extends GetxController {
   late ApiTokenHelper _token;
   late UserHelper _userHelper;
 
+  late Timer _t;
+
   // constructor
   AuthController() {
     _user = Rx<User?>(null);
@@ -105,9 +109,28 @@ class AuthController extends GetxController {
   }
 
   @override
-  void onInit() {
-    super.onInit();
-    initialize().then((_) {});
+  void onClose() {
+    closeTimer();
+    super.onClose();
+  }
+
+  void closeTimer() {
+    if (isClosed) {
+      if (_t.isActive) {
+        _t.cancel();
+      }
+    }
+  }
+
+  // timer token
+  //
+  void timerToken() async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    Timer.periodic(const Duration(minutes: 5), (Timer t) async {
+      _t = t;
+      closeTimer();
+      await renewToken();
+    });
   }
 
   // load init

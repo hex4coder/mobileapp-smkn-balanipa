@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class OrderDetailContainer extends StatelessWidget {
-  OrderDetailContainer({
+  const OrderDetailContainer({
     super.key,
     required this.content,
     this.title = "Title",

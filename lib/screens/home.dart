@@ -24,6 +24,9 @@ class _HomeScreenState extends State<HomeScreen> {
 // load current user if exists
     final AuthController authController = Get.find();
     authController.initialize().then((_) {
+      if (authController.user != null) {
+        authController.timerToken();
+      }
       // check user token
       authController.checkUserToken();
     });
