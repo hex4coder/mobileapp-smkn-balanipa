@@ -78,7 +78,6 @@ class ApiHttp {
 
         final AuthController auth = Get.find();
         await auth.renewToken();
-
         return ApiResponse.error(errTokenExpired);
       } else {
         return res;

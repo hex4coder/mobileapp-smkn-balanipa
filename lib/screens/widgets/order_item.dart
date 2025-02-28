@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myapp/configs/colors.dart';
+import 'package:myapp/configs/server.dart';
 import 'package:myapp/controllers/order.dart';
 import 'package:myapp/controllers/product.dart';
 import 'package:myapp/models/order.dart';
@@ -124,19 +125,26 @@ class _OrderItemState extends State<OrderItem> {
                           // orders infp
                           Row(
                             children: [
-                              // TOOD: orders product thumbnail
                               productLoading
                                   ? const CircularProgressIndicator.adaptive()
                                   : Container(
                                       height: 40,
                                       width: 40,
                                       decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                                ServerConfig.getImageUrl(
+                                                    productsDetail[0]
+                                                            ?.product
+                                                            .thumbnail ??
+                                                        ServerConfig.kNoImage)),
+                                            fit: BoxFit.cover,
+                                          ),
                                           color: Colors.grey,
                                           borderRadius:
                                               BorderRadius.circular(10)),
                                     ),
-
-                              // product info
+// product info
                               const SizedBox(
                                 width: 10,
                               ),
