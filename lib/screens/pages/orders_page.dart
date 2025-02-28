@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:myapp/controllers/auth.dart';
 import 'package:myapp/controllers/order.dart';
 import 'package:myapp/screens/pages/account_page.dart';
+import 'package:myapp/screens/widgets/order_item.dart';
 import 'package:myapp/screens/widgets/order_status.dart';
 
 class MyOrdersPage extends StatefulWidget {
@@ -110,7 +111,7 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
         // spacer
         const SliverToBoxAdapter(
           child: SizedBox(
-            height: 100,
+            height: 30,
           ),
         ),
 
@@ -131,19 +132,8 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
 
             // get current orders
             final order = orders[index];
-
-            // parsing data with orders list
-            // TODO: Lengkapi UI untuk item order
-            return ListTile(
-              title: Text("Order ID : ${order.id}"),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(order.status),
-                  Text(order.totalBayar.toString()),
-                  Text(order.tanggal.toIso8601String()),
-                ],
-              ),
+            return OrderItem(
+              order: order,
             );
           },
           itemCount:

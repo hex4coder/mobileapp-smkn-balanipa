@@ -108,7 +108,18 @@ class ApiHttp {
       }
 
       final r = await _dio.post(path, data: data);
-      return r.data as ApiResponse;
+
+      final res = r.data as ApiResponse;
+      if (res.message == errTokenExpired) {
+        // renew token
+
+        final AuthController auth = Get.find();
+        await auth.renewToken();
+
+        return ApiResponse.error(errTokenExpired);
+      } else {
+        return res;
+      }
     } on DioException catch (e) {
       if (e.response == null) {
         return ApiResponse.error('server tidak bisa dijangkau');
