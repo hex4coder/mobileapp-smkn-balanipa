@@ -118,7 +118,12 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
         // order list
         SliverList.builder(
           itemBuilder: (_, index) {
-            final orders = _orderApi.listOrders;
+            final orders = currentSelectedOrderStatus == "all"
+                ? _orderApi.listOrders
+                : _orderApi.listOrders
+                    .where((i) =>
+                        i.status == currentSelectedOrderStatus.toLowerCase())
+                    .toList();
 
             // no data
             if (orders.isEmpty) {
@@ -136,8 +141,15 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
               order: order,
             );
           },
-          itemCount:
-              _orderApi.listOrders.isEmpty ? 1 : _orderApi.listOrders.length,
+          itemCount: _orderApi.listOrders.isEmpty
+              ? 1
+              : (currentSelectedOrderStatus == "all"
+                  ? _orderApi.listOrders.length
+                  : _orderApi.listOrders
+                      .where((i) =>
+                          i.status == currentSelectedOrderStatus.toLowerCase())
+                      .toList()
+                      .length),
         )
       ],
     );
