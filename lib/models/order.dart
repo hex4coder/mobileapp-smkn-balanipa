@@ -10,6 +10,7 @@ class Order {
   String buktiTransfer;
   bool sudahTerbayar;
   String codePromo;
+  String? alasanPembatalan;
   int userId;
   DateTime? deletedAt;
   DateTime createdAt;
@@ -17,6 +18,7 @@ class Order {
 
   Order({
     required this.id,
+    required this.alasanPembatalan,
     required this.tanggal,
     required this.status,
     required this.totalHargaProduk,
@@ -39,6 +41,7 @@ class Order {
         id: json["id"],
         tanggal: DateTime.parse(json["tanggal"]),
         status: json["status"],
+        alasanPembatalan: json["alasan_pembatalan"],
         totalHargaProduk: json["total_harga_produk"],
         totalDiskon: json["total_diskon"],
         totalBayar: json["total_bayar"],
@@ -56,6 +59,7 @@ class Order {
   Map<String, dynamic> toJson() => {
         "id": id,
         "tanggal": tanggal.toIso8601String(),
+        "alasan_pembatalan": alasanPembatalan,
         "status": status,
         "total_harga_produk": totalHargaProduk,
         "total_diskon": totalDiskon,

@@ -47,7 +47,12 @@ class OrderDetailContainer extends StatelessWidget {
           const SizedBox(
             height: 5,
           ),
-          content,
+          Container(
+            width: double.infinity,
+            color: Colors.white,
+            padding: const EdgeInsets.all(8),
+            child: content,
+          ),
         ],
       ),
     );

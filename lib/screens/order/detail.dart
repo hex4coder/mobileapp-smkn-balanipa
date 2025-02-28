@@ -63,6 +63,21 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
+                  if (widget.order.status.toLowerCase() == "dibatalkan") ...[
+                    OrderDetailContainer(
+                      title: "Alasan pesanan dibatalkan",
+                      icon: Icons.home,
+                      content: Text(
+                        widget.order.alasanPembatalan ?? "",
+                        style: const TextStyle(
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  ],
                   OrderDetailContainer(
                     title: "Alamat Lengkap",
                     icon: Icons.home,
@@ -77,14 +92,63 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     height: 20,
                   ),
                   OrderDetailContainer(
+                    title: "Detail Harga",
+                    icon: Icons.money_rounded,
+                    content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Total Harga Produk : Rp. ${widget.order.totalHargaProduk},-",
+                          style: const TextStyle(
+                            fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          "Total Diskon : Rp. ${widget.order.totalDiskon},-",
+                          style: const TextStyle(
+                            fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          "Total Bayar : Rp. ${widget.order.totalBayar},-",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  OrderDetailContainer(
                     title: "Status Pembayaran",
                     icon: Icons.card_membership,
                     content: UiNetImage(
                       pathImage: widget.order.buktiTransfer,
                     ),
-                    actionWidget: Text(widget.order.sudahTerbayar
-                        ? "Terverifikasi"
-                        : "Belum diverifikasi"),
+                    actionWidget: Text(
+                      widget.order.sudahTerbayar
+                          ? "Terverifikasi"
+                          : "Belum diverifikasi",
+                      style: TextStyle(
+                          color: widget.order.sudahTerbayar
+                              ? kPrimaryColor
+                              : Colors.red,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                          letterSpacing: 1.2),
+                    ),
                   ),
                   const SizedBox(
                     height: 20,
@@ -96,7 +160,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           SliverList.builder(
             itemBuilder: (_, index) {
               final pd = widget.listDetailProducts[index]!;
-              final d = widget.listOrderDetails[index];
+//              final d = widget.listOrderDetails[index];
 
               return Padding(
                   padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
