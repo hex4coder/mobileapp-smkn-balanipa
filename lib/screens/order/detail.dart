@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:myapp/configs/colors.dart';
 import 'package:myapp/configs/server.dart';
 import 'package:myapp/controllers/auth.dart';
+import 'package:myapp/controllers/order.dart';
 import 'package:myapp/controllers/product.dart';
+import 'package:myapp/helpers/ui_snackbar.dart';
 import 'package:myapp/models/order.dart';
 import 'package:myapp/models/order_detail.dart';
+import 'package:myapp/screens/widgets/alasan_pembatalan_widget.dart';
+import 'package:myapp/screens/widgets/confirm_widget.dart';
 import 'package:myapp/screens/widgets/network_image.dart';
 import 'package:myapp/screens/widgets/order_detail_container.dart';
 
@@ -28,6 +33,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   String userAddress = "";
   final AuthController auth = Get.find();
 
+  bool loading = false;
+  final OrderController orderApi = Get.find();
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +49,64 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     setState(() {
       userAddress = auth.user?.address?.toAddress() ?? "";
     });
+  }
+
+  void cancelMyOrder() async {
+    // konfirmasi
+    //
+    final y = await Get.dialog(const ConfirmWidget(
+        title: "Batalkan",
+        description: "Anda yakin ingin membatalkan pesanan ini?"));
+    if (y != "yes") {
+      return;
+    }
+    // buat alasan alasanPembatalan
+    final alasanP = await Get.dialog(const AlasanPembatalanWidget());
+
+    if (alasanP == null || alasanP.toString().isEmpty) {
+      Fluttertoast.showToast(msg: "Alasan pembatalan harus ada");
+      return;
+    }
+
+    setState(() {
+      loading = true;
+    });
+
+    final orderId = widget.order.id;
+
+    final cancelled = await orderApi.cancelMyOrder(
+        CancelOrderRequest(orderId: orderId, alasanPembatalan: alasanP));
+    setState(() {
+      loading = false;
+    });
+    if (cancelled) {
+      await orderApi.getMyOrders();
+      Get.back();
+      UiSnackbar.success("Deleted", "Pesanan berhasil dihapus");
+    }
+  }
+
+  void deleteMyOrder() async {
+    final y = await Get.dialog(const ConfirmWidget(
+        title: "Delete?",
+        description: "Anda yakin ingin menghapus pesanan ini?"));
+    if (y != "yes") {
+      return;
+    }
+    setState(() {
+      loading = true;
+    });
+    final orderId = widget.order.id;
+
+    final deleted = await orderApi.deleteMyOrders(orderId);
+    setState(() {
+      loading = false;
+    });
+    if (deleted) {
+      await orderApi.getMyOrders();
+      Get.back();
+      UiSnackbar.success("Deleted", "Pesanan berhasil dihapus");
+    }
   }
 
   @override
@@ -208,6 +274,70 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               height: 10,
             ),
           ),
+          if (widget.order.status.toLowerCase() == "dibatalkan") ...[
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: OutlinedButton.icon(
+                  icon: const Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                  ),
+                  onPressed: () {
+                    deleteMyOrder();
+                  },
+                  label: const Text(
+                    "Hapus Order",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    overlayColor: Colors.red,
+                  ),
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: 20,
+              ),
+            ),
+          ],
+          if (widget.order.status.toLowerCase() == "baru") ...[
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: OutlinedButton.icon(
+                  icon: const Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                  ),
+                  onPressed: () {
+                    cancelMyOrder();
+                  },
+                  label: const Text(
+                    "Batalkan",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    overlayColor: Colors.red,
+                  ),
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: 20,
+              ),
+            ),
+          ],
         ],
       ),
     );
