@@ -82,7 +82,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     if (cancelled) {
       await orderApi.getMyOrders();
       Get.back();
-      UiSnackbar.success("Deleted", "Pesanan berhasil dihapus");
+      UiSnackbar.success("Cancelled", "Pesanan berhasil dibatalkan");
     }
   }
 
